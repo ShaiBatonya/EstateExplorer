@@ -1,0 +1,20 @@
+@keyframes borderAnimation {
+	0% {
+	  border: none;
+	  border-radius: 3%;
+	}
+	
+	50% {
+	  border: 3px solid orange;
+	  border-radius: 3%;
+	}
+	
+	100% {
+	  border: none;
+	  border-radius: 3%;
+	}
+  }
+  
+  .shadow {
+	animation: borderAnimation 2s;
+  }

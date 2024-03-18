@@ -1,0 +1,46 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#f7d2a1",
+        "activityBar.background": "#f7d2a1",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#0d9359",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#15202b99",
+        "sash.hoverBorder": "#f7d2a1",
+        "statusBar.background": "#f3bb72",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#efa443",
+        "statusBarItem.remoteBackground": "#f3bb72",
+        "statusBarItem.remoteForeground": "#15202b",
+        "titleBar.activeBackground": "#f3bb72",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#f3bb7299",
+        "titleBar.inactiveForeground": "#15202b99"
+    },
+    "peacock.color": "#f3bb72",
+    "files.exclude": {
+        "**/.git": false,
+        "**/.svn": false,
+        "**/.hg": false,
+        "**/CVS": false,
+        "**/.DS_Store": false,
+        "**/Thumbs.db": false,
+        ".vscode": false,
+        "bin": false,
+        "config": false,
+        "node_modules": false,
+        "public": false,
+        "**/package-lock.json": false,
+        "*.json": false,
+        "package-lock.json": false,
+        "**/*.json": false,
+        "**/.history": false,
+        ".history": false
+    },
+    "explorerExclude.backup": {},
+    "cSpell.words": [
+        "controler",
+        "middlewares"
+    ]
+}
