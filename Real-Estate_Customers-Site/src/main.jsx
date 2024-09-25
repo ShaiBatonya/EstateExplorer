@@ -6,9 +6,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { ChakraProvider } from "@chakra-ui/react";
 import {AuthProvider} from "./context/AuthContext";
 import "./index.css";
-
+import theme from "../src/theme/theme.js";
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <ChakraProvider>
+  <ChakraProvider theme={theme}>
     <AuthProvider>
     
         <ToastContainer />

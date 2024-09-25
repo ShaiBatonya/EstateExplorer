@@ -1,14 +1,12 @@
-// Import necessary dependencies and components
+// Home.jsx
+
 import { useContext, useEffect, useState } from "react";
 import ProductCard from "../../../components/UI/partials/products/ProductCard";
-
 import axiosInstance from "../../../config/axiosConfig"; // Import the axios instance
-
 import { AuthContext } from "../../../context/AuthContext";
 import { BsSearchHeart } from "react-icons/bs";
 import { useLoaderData, useLocation } from "react-router-dom";
 import {
-  // Import Chakra UI components for styling
   Box,
   ButtonGroup,
   Heading,
@@ -18,27 +16,18 @@ import {
   HStack,
   Button,
   Input,
-  Icon,
-  useColorModeValue,
-  Container,
   chakra,
-  createIcon,
+  Stack,
   InputRightElement,
   InputGroup,
-  Image,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  Stack,
-  Divider,
 } from "@chakra-ui/react";
-
 import Pagination from "./Pagination";
 import { Helmet } from "react-helmet";
 import Value from "../../../components/UI/sections/Value/Value";
 import Hero from "../../../components/UI/sections/Hero/Hero";
 import Companies from "../../../components/UI/sections/Companies/Companies";
+import { motion } from "framer-motion"; // Import Framer Motion for animations
+
 const abortController = new AbortController();
 
 function Home() {
@@ -47,18 +36,12 @@ function Home() {
   const productsInit = useLoaderData();
   const [filterStatus, setFilterStatus] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([...productsInit]);
   const [filteredProducts, setFilteredProducts] = useState([...productsInit]);
 
   const location = useLocation();
-
   const [searchTerm, setSearchTerm] = useState("");
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 4;
+  const productsPerPage = 8; // Display more products per page
 
   // Calculate the range of products to display on the current page
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -82,7 +65,6 @@ function Home() {
           .toLowerCase()
           .includes(searchTerm.toLowerCase())
     );
-
     setFilteredProducts(searchResults);
   }, [searchTerm, productsInit]);
 
@@ -146,7 +128,7 @@ function Home() {
         <title>Real Estate Site</title>
         <meta
           name="description"
-          content="Explore our exquisite collection of designer headscarves for women."
+          content="Explore our exquisite collection of real estate properties."
         />
       </Helmet>
 
@@ -157,150 +139,106 @@ function Home() {
       <Companies />
 
       {/* Main content section */}
-      <Box px={8} py={8} mx="auto">
+      <Box px={8} py={8} mx="auto" bg="black" color="white">
         <Box
-          w={{
-            base: "full",
-            md: 11 / 12,
-            xl: 9 / 12,
-          }}
+          w={{ base: "full", md: 11 / 12, xl: 9 / 12 }}
           mx="auto"
-          textAlign={{
-            base: "left",
-            md: "center",
-          }}
+          textAlign={{ base: "left", md: "center" }}
         >
           {/* Heading and introductory text */}
           <chakra.h1
             mb={6}
-            fontSize={{
-              base: "4xl",
-              md: "6xl",
-            }}
+            fontSize={{ base: "4xl", md: "6xl" }}
             fontWeight="bold"
             lineHeight="none"
-            letterSpacing={{
-              base: "normal",
-              md: "tight",
-            }}
-            color="gray.900"
-            _dark={{
-              color: "gray.100",
-            }}
+            letterSpacing={{ base: "normal", md: "tight" }}
+            bgGradient="linear(to-r, teal.300, blue.500)"
+            bgClip="text"
           >
-            Explore the epitome of real estate excellence.{" "}
-            <Text
-              display={{
-                base: "block",
-                lg: "inline",
-              }}
-              w="full"
-              bgClip="text"
-              bgGradient="linear(to-r, green.400,purple.500)"
-              fontWeight="extrabold"
-            >
-              customer feedback
-            </Text>{" "}
-            at our premier online platform.
+            Discover the epitome of real estate excellence.
           </chakra.h1>
+          <Text
+            display={{ base: "block", lg: "inline" }}
+            w="full"
+            bgClip="text"
+            bgGradient="linear(to-r, teal.300, blue.500)"
+            fontWeight="extrabold"
+          >
+            Customer Feedback
+          </Text>
+
           {/* Description paragraph */}
           <chakra.p
-            px={{
-              base: 0,
-              lg: 24,
-            }}
+            px={{ base: 0, lg: 24 }}
             mb={6}
-            fontSize={{
-              base: "lg",
-              md: "xl",
-            }}
-            color="gray.600"
-            _dark={{
-              color: "gray.300",
-            }}
+            fontSize={{ base: "lg", md: "xl" }}
+            color="gray.400"
           >
-            Hellonext is a feature voting software where you can allow your
-            users to vote on features, publish roadmap, and complete your
-            customer feedback loop.
+            Explore properties with real customer reviews. Get the full experience at our premier online platform.
           </chakra.p>
+
           {/* Call-to-action buttons */}
           <Stack
-            direction={{
-              base: "column",
-              sm: "row",
-            }}
-            mb={{
-              base: 4,
-              md: 8,
-            }}
+            direction={{ base: "column", sm: "row" }}
+            mb={{ base: 4, md: 8 }}
             spacing={2}
-            justifyContent={{
-              sm: "left",
-              md: "center",
-            }}
+            justifyContent={{ sm: "left", md: "center" }}
           >
-            <Button
-              as="a"
-              variant="solid"
-              display="inline-flex"
-              alignItems="center"
-              justifyContent="center"
-              w={{
-                base: "full",
-                sm: "auto",
-              }}
-              mb={{
-                base: 2,
-                sm: 0,
-              }}
-              size="lg"
-              cursor="pointer"
-            >
-              Get Started
-              <Icon boxSize={4} ml={1} viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </Icon>
-            </Button>
-            <Button
-              as="a"
-              colorScheme="gray"
-              display="inline-flex"
-              alignItems="center"
-              justifyContent="center"
-              w={{
-                base: "full",
-                sm: "auto",
-              }}
-              mb={{
-                base: 2,
-                sm: 0,
-              }}
-              size="lg"
-              cursor="pointer"
-            >
-              Book a Demo
-              <Icon boxSize={4} ml={1} viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z"
-                  clipRule="evenodd"
-                />
-              </Icon>
-            </Button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                as="a"
+                variant="solid"
+                display="inline-flex"
+                alignItems="center"
+                justifyContent="center"
+                w={{ base: "full", sm: "auto" }}
+                mb={{ base: 2, sm: 0 }}
+                size="lg"
+                cursor="pointer"
+                bg="teal.500"
+                color="white"
+                _hover={{ bg: "teal.600" }}
+              >
+                Get Started
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                as="a"
+                variant="outline"
+                display="inline-flex"
+                alignItems="center"
+                justifyContent="center"
+                w={{ base: "full", sm: "auto" }}
+                mb={{ base: 2, sm: 0 }}
+                size="lg"
+                cursor="pointer"
+                borderColor="gray.500"
+                color="white"
+                _hover={{ bg: "gray.700" }}
+              >
+                Book a Demo
+              </Button>
+            </motion.div>
           </Stack>
         </Box>
       </Box>
 
       {/* Main content section with dynamic data */}
-      <Flex minH="65vh" maxW="90%" mx="auto" direction="column" align="center">
-        <HStack justifyContent={"space-between"}>
+      <Flex
+        minH="65vh"
+        maxW="90%"
+        mx="auto"
+        direction="column"
+        align="center"
+        bg="black"
+        color="white"
+        py={10}
+      >
+        <HStack justifyContent="space-between" w="full" mb={5}>
           {/* Filter by category buttons */}
-          <ButtonGroup my={5}>
-            <Text alignSelf={"center"} fontWeight={"bold"}>
+          <ButtonGroup>
+            <Text alignSelf="center" fontWeight="bold">
               Filter By Category:
             </Text>
             <Button
@@ -321,40 +259,48 @@ function Home() {
               </Button>
             ))}
           </ButtonGroup>
-        </HStack>
 
-        {/* Search input */}
-        <InputGroup maxW={480}>
-          <Input
-            placeholder="Search by product name or description"
-            value={searchTerm}
-            onChange={onChangeHandle}
-            borderRadius="md"
-            _focus={{ borderColor: "teal.500", boxShadow: "outline" }}
-          />
-          <InputRightElement>
-            {/* Search icon button */}
-            <IconButton
-              aria-label="Search"
-              icon={<BsSearchHeart />}
-              variant="ghost"
-              color="teal.500"
+          {/* Search input */}
+          <InputGroup maxW={480}>
+            <Input
+              placeholder="Search by property name or description"
+              value={searchTerm}
+              onChange={onChangeHandle}
+              borderRadius="md"
+              bg="gray.800"
+              color="white"
+              _placeholder={{ color: "gray.400" }}
+              _focus={{ borderColor: "teal.500", boxShadow: "outline" }}
             />
-          </InputRightElement>
-        </InputGroup>
+            <InputRightElement>
+              {/* Search icon button */}
+              <IconButton
+                aria-label="Search"
+                icon={<BsSearchHeart />}
+                variant="ghost"
+                color="teal.500"
+                _hover={{ bg: "gray.700" }}
+              />
+            </InputRightElement>
+          </InputGroup>
+        </HStack>
 
         {/* Display products, handle loading and errors */}
         <Flex
-          direction={["column", "column", "row", "row"]}
+          direction={["column", "row"]}
           flexWrap="wrap"
           my={5}
           justifyContent="center"
-          gap="4"
+          gap="6"
         >
-          {loading && <span>Loading...</span>}
-          {error && <span>{error}</span>}
           {currentProducts.map((product) => (
-            <ProductCard key={product._id} product={product} />
+            <motion.div
+              key={product._id}
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ProductCard product={product} />
+            </motion.div>
           ))}
         </Flex>
 
@@ -381,7 +327,8 @@ export const getAllProducts = async () => {
     );
     return data.products;
   } catch (error) {
-    return error.response.data.error;
+    console.error(error);
+    return [];
   }
 };
 
