@@ -1,180 +1,136 @@
 import { useContext } from "react";
 import {
   Box,
-  Center,
-  Heading,
-  Text,
-  Flex,
-  Divider,
-  Stack,
   Badge,
   Image,
-  CardBody,
-  Card,
-  CardFooter,
-  ButtonGroup,
   Button,
+  Text,
+  Flex,
+  VStack,
+  HStack,
+  useColorModeValue,
 } from "@chakra-ui/react";
+import { motion } from "framer-motion"; // For smooth animations
 import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
-import "./ProductCard.css";
-import { StarIcon } from "@chakra-ui/icons";
 import { AuthContext } from "../../../../context/AuthContext";
+import { AiFillStar } from "react-icons/ai"; // Star icon from react-icons
+import "./ProductCard.css"; // Custom CSS for advanced styling
 
-function ProductCard({ product, addToCart }) {
-  // Access the navigation utility from react-router-dom
+function ProductCard({ product }) {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext); // Access user context to check authentication
 
-  // Access the user context
-  const { user } = useContext(AuthContext);
+  return (
+    <motion.div
+      whileHover={{ scale: 1.03 }} // Slight scaling effect on hover
+      whileTap={{ scale: 0.98 }} // Slight scale down on click
+      className="product-card"
+    >
+      <Box
+        id={product._id}
+        bg={useColorModeValue("white", "gray.800")}
+        borderWidth="1px"
+        borderRadius="lg"
+        overflow="hidden"
+        shadow="lg"
+        maxW="sm"
+        mx="auto"
+        transition="all 0.3s"
+        className="card-container"
+      >
+        <Image
+          src={product.product_image}
+          alt={product.product_name}
+          objectFit="cover"
+          h="250px"
+          w="100%"
+          cursor="pointer"
+          _hover={{ filter: "brightness(1.1)" }} // Lighten image on hover
+          onClick={() => navigate(`/product/${product._id}`)}
+          transition="filter 0.3s ease"
+        />
 
-  // Hero component containing the product details
-  const Hero = () => {
-    // Example property details
-    const property = {
-      beds: 3,
-      baths: 2,
-      reviewCount: 34,
-      rating: 4,
-    };
+        <Box p={6}>
+          <Badge borderRadius="full" px="3" colorScheme="green">
+            New
+          </Badge>
 
-    return (
-      <Flex>
-        <Box
-          id={product._id}
-          bg="white"
-          maxW="sm"
-          borderWidth="1px"
-          rounded="lg"
-          shadow="lg"
-          textAlign="center"
-        >
-          <Image
-            onClick={() => {
-              navigate(`/product/${product._id}`);
-            }}
-            style={{
-              cursor: "pointer",
-              borderRadius: "8px",
-              margin: "0 auto",
-              width: "100%",
-              height: "200px",
-              objectFit: "cover",
-            }}
-            src={product.product_image}
-            alt={product.product_name}
-          />
+          <Text
+            mt={4}
+            fontSize="2xl"
+            fontWeight="bold"
+            lineHeight="short"
+            color="teal.600"
+            noOfLines={1}
+            textAlign="center"
+            _hover={{ color: "teal.800" }}
+            transition="color 0.3s ease"
+          >
+            {product.product_name}
+          </Text>
 
-          <Box p="6">
-            <Box display="flex" alignItems="baseline">
-              <Badge rounded="full" px="2" colorScheme="teal">
-                New
-              </Badge>
-              <Box
-                color="gray.500"
-                fontWeight="semibold"
-                letterSpacing="wide"
-                fontSize="xs"
-                textTransform="uppercase"
-                ml="2"
-              >
-                {property.beds} beds &bull; {property.baths} baths
-              </Box>
-            </Box>
+          <Text mt={2} fontSize="md" color="gray.500" noOfLines={2}>
+            {product.product_description}
+          </Text>
 
-            <Text
-              mt="4"
-              mb="4"
-              fontWeight="bold"
-              fontSize={{ base: "l", md: "2xl", lg: "3xl" }}
-              lineHeight="1.2"
-              color="teal.600"
-              textAlign="center"
-              maxW="xl"
-              mx="auto"
-              noOfLines={3}
-              _hover={{ color: "teal.800" }}
-              transition="color 0.3s"
-            >
-              {product.product_name}
-            </Text>
-
-            <Text mt="2" mb="2" fontSize="m" fontFamily={"bold"} color="gray.600">
-              {product.product_description}
-            </Text>
-
-            <Box fontSize="xl">
-              {product.product_price}
-              <Box as="span" color="gray.600" fontSize="Xl" fontWeight={"bold"}>
-                $ WK
-              </Box>
-            </Box>
-
-            <Box display="flex" mt="2" mb={2} alignItems="center">
-              {Array(5)
-                .fill("")
-                .map((_, i) => (
-                  <StarIcon
-                    key={i}
-                    color={i < property.rating ? "teal.500" : "gray.300"}
-                  />
-                ))}
-              <Box as="span" ml="2" color="gray.600" fontSize="Xl">
-                {property.reviewCount} reviews
-              </Box>
-            </Box>
-
-            {/* Conditional rendering based on user authentication */}
+          <VStack mt={5} spacing={3}>
             {user ? (
-              <Button
-                mb={7}
-                variant="solid"
-                colorScheme="blue"
-                ml="2"
-                _hover={{
-                  bg: "green.300",
-                }}
-                onClick={() => {
-                  navigate(`/product/${product._id}`);
-                }}
-                style={{
-                  cursor: "pointer",
-                  borderRadius: "8px",
-                  margin: "0 auto",
-                }}
-              >
-                click for more details
-              </Button>
-            ) : (
-              <Button
-                as={RouterLink}
-                ml="2"
-                to="/Register"
-                _hover={{
-                  bg: "green.300",
-                }}
-                mt={5}
-                variant="solid"
-                colorScheme="blue"
-                onClick={() => {
-                  navigate(`/product/${product._id}`);
-                }}
-                style={{
-                  cursor: "pointer",
-                  borderRadius: "8px",
-                  margin: "0 auto",
-                }}
-              >
-                For more details Register/Login
-              </Button>
-            )}
-          </Box>
-        </Box>
-      </Flex>
-    );
-  };
+              <>
+                {/* Show full details only if the user is authenticated */}
+                <HStack justifyContent="space-between" mt={4} w="full">
+                  <Text fontSize="xl" fontWeight="bold" color="gray.700">
+                    ${product.product_price}
+                  </Text>
+                  <HStack spacing={1}>
+                    {Array(5)
+                      .fill("")
+                      .map((_, i) => (
+                        <AiFillStar
+                          key={i}
+                          color={i < 4 ? "teal.500" : "gray.300"} // Adjust rating display
+                        />
+                      ))}
+                  </HStack>
+                </HStack>
 
-  return <Hero />;
+                <Button
+                  variant="solid"
+                  colorScheme="teal"
+                  w="full"
+                  onClick={() => navigate(`/product/${product._id}`)}
+                  _hover={{ bg: "teal.500" }}
+                  rounded="md"
+                  fontSize="md"
+                >
+                  View Details
+                </Button>
+              </>
+            ) : (
+              <>
+                {/* Show only if the user is not authenticated */}
+                <Text mt={4} fontSize="lg" fontWeight="bold" color="red.500">
+                  Register or Login to View Details
+                </Text>
+                <Button
+                  as={RouterLink}
+                  to="/Register"
+                  variant="solid"
+                  colorScheme="teal"
+                  w="full"
+                  _hover={{ bg: "teal.500" }}
+                  rounded="md"
+                  fontSize="md"
+                >
+                  Register to Buy
+                </Button>
+              </>
+            )}
+          </VStack>
+        </Box>
+      </Box>
+    </motion.div>
+  );
 }
 
 export default ProductCard;

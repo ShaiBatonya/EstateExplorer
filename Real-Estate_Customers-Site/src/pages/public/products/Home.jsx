@@ -224,94 +224,115 @@ function Home() {
         </Box>
       </Box>
 
-      {/* Main content section with dynamic data */}
-      <Flex
-        minH="65vh"
-        maxW="90%"
-        mx="auto"
-        direction="column"
-        align="center"
-        bg="black"
-        color="white"
-        py={10}
+   {/* Main content section with dynamic data */}
+<Flex
+  minH="65vh"
+  maxW="90%"
+  mx="auto"
+  direction="column"
+  align="center"
+  bg="black"
+  color="white"
+  py={10}
+  px={{ base: 4, md: 8 }}  // Padding adjusted for responsiveness
+>
+{/* Filter by category section */}
+<HStack 
+  justifyContent={{ base: "center", md: "space-between" }}  // Ensuring proper alignment across screen sizes
+  w="full" 
+  mb={5}
+  flexDirection={{ base: "column", md: "row" }}  // Stack vertically on small screens and horizontally on larger ones
+  alignItems="center"  // Aligning elements centrally on all screen sizes
+  spacing={{ base: 4, md: 0 }}  // Adjusting spacing for small screens
+>
+  <ButtonGroup
+    flexWrap="wrap"  // Buttons adjust and wrap for smaller screens
+    spacing={4}  // Consistent spacing between buttons
+    justifyContent={{ base: "center", md: "flex-start" }}  // Center on small screens, left on large screens
+  >
+    <Text alignSelf="center" fontWeight="bold" color="teal.300" fontSize={{ base: "md", lg: "lg" }}>
+      Filter By Category:
+    </Text>
+    <Button
+      variant={filterStatus === null ? "solid" : "outline"}
+      onClick={() => handleFilterByCategory(null)}
+      colorScheme="orange"
+      transition="all 0.3s"
+      _hover={{ bg: "orange.400", transform: "scale(1.05)" }}  // Adding hover animation for better UX
+    >
+      All
+    </Button>
+    {categories.map((category) => (
+      <Button
+        key={category._id}
+        variant={filterStatus === category._id ? "solid" : "outline"}
+        onClick={() => handleFilterByCategory(category._id)}
+        colorScheme="blue"
+        transition="all 0.3s"
+        _hover={{ bg: "blue.400", transform: "scale(1.05)" }}  // Adding hover animation
       >
-        <HStack justifyContent="space-between" w="full" mb={5}>
-          {/* Filter by category buttons */}
-          <ButtonGroup>
-            <Text alignSelf="center" fontWeight="bold">
-              Filter By Category:
-            </Text>
-            <Button
-              variant={filterStatus === null ? "solid" : "outline"}
-              onClick={() => handleFilterByCategory(null)}
-              colorScheme="orange"
-            >
-              All
-            </Button>
-            {categories.map((category) => (
-              <Button
-                key={category._id}
-                variant={filterStatus === category._id ? "solid" : "outline"}
-                onClick={() => handleFilterByCategory(category._id)}
-                colorScheme="blue"
-              >
-                {category.category_name}
-              </Button>
-            ))}
-          </ButtonGroup>
+        {category.category_name}
+      </Button>
+    ))}
+  </ButtonGroup>
 
-          {/* Search input */}
-          <InputGroup maxW={480}>
-            <Input
-              placeholder="Search by property name or description"
-              value={searchTerm}
-              onChange={onChangeHandle}
-              borderRadius="md"
-              bg="gray.800"
-              color="white"
-              _placeholder={{ color: "gray.400" }}
-              _focus={{ borderColor: "teal.500", boxShadow: "outline" }}
-            />
-            <InputRightElement>
-              {/* Search icon button */}
-              <IconButton
-                aria-label="Search"
-                icon={<BsSearchHeart />}
-                variant="ghost"
-                color="teal.500"
-                _hover={{ bg: "gray.700" }}
-              />
-            </InputRightElement>
-          </InputGroup>
-        </HStack>
+  {/* Search input section */}
+  <InputGroup 
+    maxW={["100%", "480px"]} 
+    mt={{ base: 4, md: 0 }}  // Add margin-top on small screens, none on larger ones
+    flex={{ base: "1 0 100%", md: "auto" }}  // Ensure full width on small screens
+  >
+    <Input
+      placeholder="Search by property name or description"
+      value={searchTerm}
+      onChange={onChangeHandle}
+      borderRadius="md"
+      bg="gray.800"
+      color="white"
+      _placeholder={{ color: "gray.400" }}
+      _focus={{ borderColor: "teal.500", boxShadow: "outline" }}
+    />
+    <InputRightElement>
+      <IconButton
+        aria-label="Search"
+        icon={<BsSearchHeart />}
+        variant="ghost"
+        color="teal.500"
+        _hover={{ bg: "gray.700" }}
+      />
+    </InputRightElement>
+  </InputGroup>
+</HStack>
 
-        {/* Display products, handle loading and errors */}
-        <Flex
-          direction={["column", "row"]}
-          flexWrap="wrap"
-          my={5}
-          justifyContent="center"
-          gap="6"
-        >
-          {currentProducts.map((product) => (
-            <motion.div
-              key={product._id}
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3 }}
-            >
-              <ProductCard product={product} />
-            </motion.div>
-          ))}
-        </Flex>
 
-        {/* Pagination component */}
-        <Pagination
-          currentPage={currentPage}
-          productsPerPage={productsPerPage}
-          totalProducts={filteredProducts.length}
-          onPageChange={handlePageChange}
-        />
-      </Flex>
+  {/* Products display */}
+  <Flex
+    direction={["column", "row"]}  // Ensuring flexibility for mobile and desktop
+    flexWrap="wrap"
+    my={5}
+    justifyContent="center"
+    gap={6}
+  >
+    {currentProducts.map((product) => (
+      <motion.div
+        key={product._id}
+        whileHover={{ scale: 1.05 }}  // Slightly increased hover effect for a better feel
+        transition={{ duration: 0.3 }}
+      >
+        <ProductCard product={product} />
+      </motion.div>
+    ))}
+  </Flex>
+
+  {/* Pagination component */}
+  <Pagination
+    currentPage={currentPage}
+    productsPerPage={productsPerPage}
+    totalProducts={filteredProducts.length}
+    onPageChange={handlePageChange}
+  />
+</Flex>
+
 
       {/* Value section */}
       <Value />

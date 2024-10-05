@@ -1,20 +1,17 @@
-@keyframes borderAnimation {
-	0% {
-	  border: none;
-	  border-radius: 3%;
-	}
-	
-	50% {
-	  border: 3px solid orange;
-	  border-radius: 3%;
-	}
-	
-	100% {
-	  border: none;
-	  border-radius: 3%;
-	}
-  }
-  
-  .shadow {
-	animation: borderAnimation 2s;
-  }
+/* ProductCard.css */
+.product-card {
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+	transform: scale(1.05);
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-container {
+	transition: all 0.3s ease;
+}
+
+.card-container:hover {
+	border: 2px solid teal;
+}

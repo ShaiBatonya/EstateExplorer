@@ -1,9 +1,46 @@
-.c-container{
-    justify-content: space-around;
-    gap: 1rem;
 
-}
-.c-container>img{
-    width: 7rem;
-   
-}
+.c-wrapper {
+    padding: 2rem 0;
+    background-color: #f0f4f8;
+  }
+  
+
+  .c-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  
+  .c-container > img {
+    width: 10rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+
+  .c-container > img:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  
+  @media (max-width: 768px) {
+    .c-container > img {
+      width: 8rem;
+    }
+  }
+  
+
+  @media (max-width: 480px) {
+    .c-container {
+      flex-direction: column;
+      gap: 2rem;
+    }
+  
+    .c-container > img {
+      width: 6rem;
+    }
+  }
+  

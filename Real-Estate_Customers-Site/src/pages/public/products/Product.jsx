@@ -1,4 +1,3 @@
-// Import necessary React dependencies and styled components
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
@@ -10,46 +9,40 @@ import {
   Image,
   Spinner,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
-
-// Import axios instance for API requests
-import axiosInstance from "../../../config/axiosConfig";
-
-// Import React Router dependencies
 import { useParams, Link } from "react-router-dom";
-
-// Import additional components
 import { Helmet } from "react-helmet";
+import axiosInstance from "../../../config/axiosConfig";
 import AppointmentForm from "./AppointmentForm";
-
-// Define styled components for styling
-const LightBackgroundColor = "#f7f7f7";
-const PrimaryColor = "#3498db";
-const SecondaryColor = "#2980b9";
+import { motion } from "framer-motion";
 
 const ProductDetailsContainer = styled(Container)`
-  background-color: ${LightBackgroundColor};
+  background-color: ${(props) => props.bgColor};
   padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   margin-top: 40px;
   margin-bottom: 40px;
+  transition: all 0.3s ease;
 `;
 
 const ProductGrid = styled(Flex)`
-  @media (max-width: 767px) {
-    flex-direction: column;
+  flex-direction: column;
+  @media (min-width: 768px) {
+    flex-direction: row;
   }
 `;
 
 const ProductImage = styled(Image)`
   max-width: 100%;
-  border-radius: 8px;
+  border-radius: 16px;
   margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 `;
 
 const PriceText = styled(Text)`
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: bold;
   color: #e44d26;
   margin-bottom: 20px;
@@ -59,13 +52,14 @@ const GoBackButton = styled(Link)`
   display: inline-block;
   text-decoration: none;
   color: #fff;
-  background-color: ${PrimaryColor};
-  padding: 12px 24px;
-  border-radius: 4px;
-  transition: background-color 0.3s;
+  background-color: #3498db;
+  padding: 14px 28px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s;
 
   &:hover {
-    background-color: ${SecondaryColor};
+    background-color: #2980b9;
+    transform: translateY(-3px);
   }
 `;
 
@@ -73,17 +67,12 @@ const ContactSection = styled(Box)`
   margin-top: 40px;
 `;
 
-// ProductDetails component for displaying detailed information about a product
 function ProductDetails() {
-  // Retrieve product ID from URL parameters
   const { id } = useParams();
-
-  // State variables for loading, error, and product details
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [product, setProduct] = useState(null);
 
-  // Fetch product details from the server upon component mount
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -102,84 +91,55 @@ function ProductDetails() {
     fetchProduct();
   }, [id]);
 
-  // Clear localStorage on component unmount
-  useEffect(() => {
-    return () => {
-      localStorage.removeItem("chosen");
-    };
-  }, []);
-
-  // Render product details, spinner, or error message based on the state
   return (
     <>
-      {/* Helmet for updating page title and meta description */}
       <Helmet>
         {product && <title>{product.product_name} Details</title>}
         <meta name="description" content={product?.product_description || ""} />
       </Helmet>
 
-      {/* Display spinner while loading */}
       {loading && <Spinner />}
-      {/* Display error message if an error occurs */}
       {error && <Text color="red">{error}</Text>}
 
-      {/* Render product details if available */}
       {product && (
-        <ProductDetailsContainer maxW="container.lg">
-          {/* ProductGrid for responsive layout */}
-          <ProductGrid direction={{ base: "column", md: "row" }} align="center">
-            {/* Box for product image */}
+        <ProductDetailsContainer maxW="container.lg" bgColor={useColorModeValue("#f7f7f7", "#2D3748")}>
+          <ProductGrid align="center">
             <Box flex="1" mr={{ base: 0, md: 8 }}>
-              {/* Styled ProductImage component */}
-              <ProductImage
-                src={product.product_image}
-                alt="Product Image"
-                borderRadius="md"
-                boxShadow="md"
-              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+              >
+                <ProductImage src={product.product_image} alt="Product Image" borderRadius="md" />
+              </motion.div>
             </Box>
-            {/* Box for product details */}
             <Box flex="1">
-              {/* Heading for property details */}
               <Heading as="h1" size="xl" mb={4} color="teal.500">
                 Property Details
               </Heading>
-              {/* Heading for property name */}
               <Heading as="h2" size="2xl" mb={4} color="gray.700">
                 {product.product_name}
               </Heading>
-              {/* Divider for separating sections */}
               <Divider mb={4} />
-              {/* Heading for property description */}
               <Heading as="h1" size="xl" mb={2} color="teal.500">
                 Property Description
               </Heading>
-              {/* Text for displaying property description */}
               <Text>{product.product_description}</Text>
-              {/* Heading for property price */}
               <Heading as="h1" size="xl" mb={2} color="teal.500">
                 Price
               </Heading>
-              {/* Styled PriceText component for displaying price */}
-              <PriceText fontSize="2xl" fontWeight="bold" color="red.500">
-                ${product.product_price}
-              </PriceText>
+              <PriceText>${product.product_price}</PriceText>
             </Box>
           </ProductGrid>
-          {/* ContactSection for appointment form */}
           <ContactSection mb={8}>
-            {/* Heading for contact section */}
             <Heading as="h3" size="lg" mb={4} textAlign="center">
               Contact the Agent
             </Heading>
-            {/* Text for contact information */}
             <Text fontSize="lg" mb={4} textAlign="center" color="gray.600">
               For inquiries or to schedule a visit, kindly reach out to us:
             </Text>
-            {/* AppointmentForm component for scheduling appointments */}
             <AppointmentForm />
           </ContactSection>
-          {/* GoBackButton for navigating back to listings */}
           <GoBackButton to="/">Go Back to Listings</GoBackButton>
         </ProductDetailsContainer>
       )}
@@ -187,5 +147,4 @@ function ProductDetails() {
   );
 }
 
-// Export the ProductDetails component as the default export
 export default ProductDetails;
