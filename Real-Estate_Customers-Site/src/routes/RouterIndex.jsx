@@ -10,6 +10,7 @@ import {
   PasswordReset,
   NotFound,
   ForgotPassword,
+  Cart,
 } from "./elements"; // Import components from the "elements" module
 import Root from "../pages/Root"; // Import the Root component
 import {
@@ -22,7 +23,6 @@ import Product from "../pages/public/products/Product"; // Import the Product co
 import { Suspense, lazy, useContext } from "react"; // Import necessary React components and functions
 import PrivateRoutes from "../utils/PrivateRoutes"; // Import the PrivateRoutes component
 import { AuthContext } from "../context/AuthContext"; // Import the AuthContext for authentication
-
 import { getAllProducts } from "../pages/public/products/Home"; // Import a function to get all products
 
 // Component to handle public routes
@@ -50,6 +50,8 @@ const RouterIndex = () => {
         {/* Register and Login routes */}
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
+        {/* Cart route */}
+        <Route path="cart" element={<Cart />} />
 
         {/* Private routes available only for authenticated users */}
         <Route element={<PrivateRoutes user={user} />}>

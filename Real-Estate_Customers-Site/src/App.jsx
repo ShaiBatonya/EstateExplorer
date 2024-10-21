@@ -1,15 +1,15 @@
 import "./App.css";
 import ParticlesBg from "particles-bg";
 import RouterIndex from "./routes/RouterIndex";
+import { Box } from "@chakra-ui/react";
+
 function App() {
   return (
-    <div className="App">
-      <div>
+    <Box className="App" position="relative" overflowX="hidden">
       <ParticlesBg type="cobweb" color="#00A3C4" num={150} bg={true} />
-        <div className="white-gradient" />
-        <RouterIndex />
-      </div>
-    </div>
+      <Box className="white-gradient" />
+      <RouterIndex />
+    </Box>
   );
 }
 

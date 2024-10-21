@@ -1,7 +1,6 @@
 import {
   Box,
   Flex,
-  Text,
   IconButton,
   Heading,
   Button,
@@ -16,12 +15,11 @@ import { motion } from "framer-motion";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
+import './Nav.css'; // קובץ CSS מותאם אישית
 
 function Nav() {
-  // Access user context
   const { user, logout } = useContext(AuthContext);
 
-  // Handle user logout
   const handleLogout = async () => {
     try {
       const response = await logout();
@@ -31,39 +29,27 @@ function Nav() {
     }
   };
 
-  // Define navigation items
   const NAV_ITEMS = [
-    {
-      label: "Home",
-      to: "/",
-    },
+    { label: "Home", to: "/" },
   ];
 
   if (user) {
     NAV_ITEMS.push(
-      {
-        label: "About",
-        to: "/About",
-      },
-      {
-        label: "Contact",
-        to: "/Contact",
-      }
+      { label: "About", to: "/About" },
+      { label: "Contact", to: "/Contact" }
     );
   }
 
-  // UseDisclosure hook for managing state of mobile navigation
   const { isOpen, onToggle } = useDisclosure();
 
   return (
     <Box
-      bgGradient="linear-gradient(135deg, #06beb6, #48b1bf)" // Gradient Animation
+      className="gradient-background"
       color="white"
       position="sticky"
       top={0}
       zIndex="sticky"
       shadow="lg"
-      borderBottom={0} // Removing the border at the bottom
     >
       <Flex
         minH="60px"
@@ -72,23 +58,24 @@ function Nav() {
         align="center"
         justify="space-between"
       >
-        {/* Logo Section */}
         <Flex
           flex={{ base: 1, md: "auto" }}
           ml={{ base: -2 }}
           display={{ base: "flex", md: "none" }}
         >
-          <IconButton
-            onClick={onToggle}
-            icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
-            variant="ghost"
-            aria-label="Toggle Navigation"
-          />
+          <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.3 }}>
+            <IconButton
+              onClick={onToggle}
+              icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
+              variant="ghost"
+              aria-label="Toggle Navigation"
+            />
+          </motion.div>
         </Flex>
 
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
           <motion.div
-            whileHover={{ scale: 1.1 }} // Animating logo on hover
+            whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.5 }}
           >
             <Heading as="h1" size="lg" fontWeight="bold">
@@ -117,12 +104,7 @@ function Nav() {
               fontWeight={600}
               color="white"
               bg="blue.400"
-              _hover={{
-                bg: "blue.300",
-                boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.2)", // Adding hover shadow effect
-              }}
-              borderRadius="full" // Rounded button
-              transition="0.3s" // Smooth transition
+              className="nav-button"
             >
               Logout
             </Button>
@@ -138,12 +120,7 @@ function Nav() {
                 color="white"
                 bg="blue.900"
                 to="/login"
-                _hover={{
-                  bg: "blue.700",
-                  boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.2)",
-                }}
-                borderRadius="full"
-                transition="0.3s"
+                className="nav-button"
               >
                 Login
               </Button>
@@ -156,12 +133,7 @@ function Nav() {
                 color="white"
                 bg="green.400"
                 to="/Register"
-                _hover={{
-                  bg: "green.300",
-                  boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.2)",
-                }}
-                borderRadius="full"
-                transition="0.3s"
+                className="nav-button"
               >
                 Register
               </Button>
@@ -177,17 +149,13 @@ function Nav() {
   );
 }
 
-// Desktop navigation component
 const DesktopNav = ({ NAV_ITEMS }) => {
-  const linkColor = "white";
-  const linkHoverColor = "gray.300";
-
   return (
     <Stack direction="row" spacing={6}>
       {NAV_ITEMS.map((navItem) => (
         <motion.div
           key={navItem.label}
-          whileHover={{ scale: 1.1 }} // Enlarge on hover
+          whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.3 }}
         >
           <ChakraLink
@@ -195,12 +163,12 @@ const DesktopNav = ({ NAV_ITEMS }) => {
             to={navItem.to}
             fontSize="lg"
             fontWeight="600"
-            color={linkColor}
+            color="white"
             _hover={{
-              color: linkHoverColor,
+              color: "gray.300",
               textDecoration: "underline",
             }}
-            transition="0.3s" // Smooth transition on hover
+            transition="0.3s"
           >
             {navItem.label}
           </ChakraLink>
@@ -210,7 +178,6 @@ const DesktopNav = ({ NAV_ITEMS }) => {
   );
 };
 
-// Mobile navigation component
 const MobileNav = ({ NAV_ITEMS }) => {
   return (
     <Stack bg="blue.600" p={4} display={{ md: "none" }}>
@@ -221,7 +188,6 @@ const MobileNav = ({ NAV_ITEMS }) => {
   );
 };
 
-// Mobile navigation item component
 const MobileNavItem = ({ label, to }) => {
   return (
     <ChakraLink

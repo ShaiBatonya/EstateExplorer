@@ -18,3 +18,4 @@ export const PasswordReset = Loadable(lazy(() => import("../pages/public/Passwor
 export const Product = Loadable(lazy(() => import("../pages/public/products/Product")));
 export const Profile = Loadable(lazy(() => import("../pages/private/Profile")));
 export const Register = Loadable(lazy(() => import("../pages/public/Register")));
+export const Cart = Loadable(lazy(() => import("../pages/public/Cart")));

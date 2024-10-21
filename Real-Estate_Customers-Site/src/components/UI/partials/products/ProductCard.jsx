@@ -10,22 +10,22 @@ import {
   HStack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { motion } from "framer-motion"; // For smooth animations
+import { motion } from "framer-motion"; 
 import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import { AuthContext } from "../../../../context/AuthContext";
-import { AiFillStar } from "react-icons/ai"; // Star icon from react-icons
-import "./ProductCard.css"; // Custom CSS for advanced styling
+import { AiFillStar } from "react-icons/ai"; 
+import "./ProductCard.css"; 
 
 function ProductCard({ product }) {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext); // Access user context to check authentication
+  const { user } = useContext(AuthContext); 
 
   return (
     <motion.div
-      whileHover={{ scale: 1.03 }} // Slight scaling effect on hover
-      whileTap={{ scale: 0.98 }} // Slight scale down on click
-      className="product-card"
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.98 }}
+      className="product-card-enhanced"
     >
       <Box
         id={product._id}
@@ -36,7 +36,6 @@ function ProductCard({ product }) {
         shadow="lg"
         maxW="sm"
         mx="auto"
-        transition="all 0.3s"
         className="card-container"
       >
         <Image
@@ -46,9 +45,8 @@ function ProductCard({ product }) {
           h="250px"
           w="100%"
           cursor="pointer"
-          _hover={{ filter: "brightness(1.1)" }} // Lighten image on hover
+          _hover={{ filter: "brightness(1.1)" }}
           onClick={() => navigate(`/product/${product._id}`)}
-          transition="filter 0.3s ease"
         />
 
         <Box p={6}>
@@ -65,7 +63,6 @@ function ProductCard({ product }) {
             noOfLines={1}
             textAlign="center"
             _hover={{ color: "teal.800" }}
-            transition="color 0.3s ease"
           >
             {product.product_name}
           </Text>
@@ -77,7 +74,6 @@ function ProductCard({ product }) {
           <VStack mt={5} spacing={3}>
             {user ? (
               <>
-                {/* Show full details only if the user is authenticated */}
                 <HStack justifyContent="space-between" mt={4} w="full">
                   <Text fontSize="xl" fontWeight="bold" color="gray.700">
                     ${product.product_price}
@@ -88,7 +84,7 @@ function ProductCard({ product }) {
                       .map((_, i) => (
                         <AiFillStar
                           key={i}
-                          color={i < 4 ? "teal.500" : "gray.300"} // Adjust rating display
+                          color={i < 4 ? "teal.500" : "gray.300"}
                         />
                       ))}
                   </HStack>
@@ -108,7 +104,6 @@ function ProductCard({ product }) {
               </>
             ) : (
               <>
-                {/* Show only if the user is not authenticated */}
                 <Text mt={4} fontSize="lg" fontWeight="bold" color="red.500">
                   Register or Login to View Details
                 </Text>

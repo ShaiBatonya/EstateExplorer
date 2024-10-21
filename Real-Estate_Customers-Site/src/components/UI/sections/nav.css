@@ -1,0 +1,47 @@
+.gradient-background {
+    background: linear-gradient(135deg, #89f7fe, #66a6ff, #ff758c, #ff7eb3);
+    background-size: 300% 300%;
+    animation: gradientAnimation 15s ease infinite;
+  }
+  
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .nav-button {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+  }
+  
+  .nav-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+  }
+  
+  .mobile-nav {
+    transition: all 0.4s ease-in-out;
+  }
+  
+  .mobile-nav-open {
+    max-height: 500px;
+  }
+  
+  .mobile-nav-closed {
+    max-height: 0;
+    overflow: hidden;
+  }
+  
+  .navbar {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  

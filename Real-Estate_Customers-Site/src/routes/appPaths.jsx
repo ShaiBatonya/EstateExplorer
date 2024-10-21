@@ -8,4 +8,5 @@ export const appPaths = {
   profile: '/profile',
   passwordReset: '/password-reset',
   forgotPassword: '/forgot-password/:id',
+  cart: '/cart',
 };
