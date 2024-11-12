@@ -13,9 +13,10 @@ import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useContext } from "react";
-import { AuthContext } from "../../../context/AuthContext";
+import { AuthContext } from "../../../../context/AuthContext";
 import { toast } from "react-toastify";
 import './Nav.css';
+
 
 function Nav() {
   const { user, logout } = useContext(AuthContext);
