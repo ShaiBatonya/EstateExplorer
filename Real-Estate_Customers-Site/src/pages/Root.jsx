@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
-import Nav from "../components/UI/sections/Nav";
+import Nav from "../components/UI/sections/Navbar/Nav";
+
 import Footer from "../components/UI/sections/Footer";
 
 
