@@ -4,7 +4,8 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-require("dotenv").config("../.env");
+require("dotenv").config();
+
 const connectDB = require("./utils/connection");
 const debug = require("debug")("backend:server");
 const http = require("http");

@@ -12,7 +12,7 @@ const connection = async() =>{
             useUnifiedTopology: true,
             useNewUrlParser: true,
             /* useCreateIndex: true, */
-            autoIndex: true,
+            serverSelectionTimeoutMS: 50000
         });
 
         console.log("mongoose connected to DB");

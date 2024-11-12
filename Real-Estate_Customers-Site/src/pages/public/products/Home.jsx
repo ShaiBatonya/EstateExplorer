@@ -290,7 +290,7 @@ function Home() {
 export const getAllProducts = async () => {
   try {
     const { data } = await axiosInstance.get(
-      `${import.meta.env.VITE_SERVER_URL}/products/customers/all`
+      `/products/customers/all`
     );
     return data.products;
   } catch (error) {
