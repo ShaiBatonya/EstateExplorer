@@ -289,15 +289,16 @@ function Home() {
 // Function to fetch all products from the server
 export const getAllProducts = async () => {
   try {
-    const { data } = await axiosInstance.get(
-      `/products/customers/all`
-    );
+    console.log("Sending request to /products/customers/all");
+    const { data } = await axiosInstance.get("/products/customers/all");
+    console.log("Response data:", data);
     return data.products;
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching products:", error);
     return [];
   }
 };
+
 
 // Export the Home component as the default export
 export default Home;
