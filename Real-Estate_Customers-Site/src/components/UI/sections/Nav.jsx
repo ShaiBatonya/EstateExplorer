@@ -15,7 +15,7 @@ import { motion } from "framer-motion";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
-import './Nav.css'; // קובץ CSS מותאם אישית
+import './Nav.css';
 
 function Nav() {
   const { user, logout } = useContext(AuthContext);
