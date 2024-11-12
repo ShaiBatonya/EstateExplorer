@@ -18,6 +18,7 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.12",
     "accessibility": "^4.5.7",
     "axios": "^1.4.0",
+    "core-js": "^3.39.0",
     "framer-motion": "^10.18.0",
     "fs": "^0.0.1-security",
     "leaflet": "^1.9.4",
