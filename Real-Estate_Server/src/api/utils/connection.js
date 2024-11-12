@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+require('dotenv').config();
 
 
 const connection = async() =>{
@@ -12,7 +12,7 @@ const connection = async() =>{
             useUnifiedTopology: true,
             useNewUrlParser: true,
             /* useCreateIndex: true, */
-            serverSelectionTimeoutMS: 50000
+       
         });
 
         console.log("mongoose connected to DB");
