@@ -1,134 +1,170 @@
-// Import necessary Chakra UI components and React dependencies
-import { Box, Heading, FormControl, FormLabel, Input, Button, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  FormControl,
+  FormLabel,
+  Input,
+  Button,
+  Text,
+  VStack,
+  useToast,
+  useColorModeValue,
+  Alert,
+  AlertIcon,
+} from "@chakra-ui/react";
 import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { toast } from "react-toastify";
 import { Navigate, useNavigate, Link } from "react-router-dom";
+import { z } from "zod";
 
-// Login component
+// Schema validation for login form
+const loginSchema = z.object({
+  user_email: z.string().email("Invalid email format"),
+  user_password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
 const Login = () => {
-  // Access the navigation function from react-router-dom
   const navigate = useNavigate();
-
-  
-  // Access user data and login function from AuthContext
   const { user, login } = useContext(AuthContext);
-
-  // State variables for loading status and form values
-  const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
     user_email: "",
-    user_password: ""
+    user_password: "",
   });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
-  // Handle input change in the form
+  // Handle input change
   const handleChange = (e) => {
-    setValues({
-      ...values,
-      [e.target.name]: e.target.value
-    });
+    setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // Handle form submission for user login
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const parsedData = loginSchema.parse(values);
+      setErrors({});
       setLoading(true);
-      // Call login function with email and password values
-      const response = await login(values.user_email, values.user_password);
-      debugger
 
-      // Display success message and navigate to home page
-      toast.success(response.message);
+      const response = await login(parsedData.user_email, parsedData.user_password);
+      toast({
+        title: "Login Successful",
+        description: response.message,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
       navigate("/");
     } catch (error) {
-      debugger
-      // Display error message if login fails
-      return {
-        success: false,
-        error: error.response.data.error
-      };
+      if (error instanceof z.ZodError) {
+        const fieldErrors = {};
+        error.errors.forEach((err) => {
+          fieldErrors[err.path[0]] = err.message;
+        });
+        setErrors(fieldErrors);
+      } else {
+        toast({
+          title: "Login Failed",
+          description: "Please check your credentials and try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // Redirect to home page if user is already logged in
-  if(user) {
-    return <Navigate to="/"/>
+  // Redirect to home if user is already logged in
+  if (user) {
+    return <Navigate to="/" />;
   }
 
-  // Render the login form
   return (
-    <>
-      <Box
-        as="form"
-        onSubmit={handleSubmit}
-        minH="65vh"
-        maxW="600px"
-        mx="auto"
-        py={10}
-        px={4}
-      >
-        {/* Heading for the login form */}
-        <Heading as="h2" size="xl" mb={6}>
-          Login
-        </Heading>
-        {/* Email input field in the form */}
-        <FormControl id="email" isRequired mb={4}>
+    <Box
+      as="form"
+      onSubmit={handleSubmit}
+      bg={useColorModeValue("gray.800", "gray.900")}
+      color="white"
+      borderRadius="lg"
+      shadow="xl"
+      p={8}
+      maxW="lg"
+      mx="auto"
+      mt={10}
+    >
+      <Heading as="h2" size="xl" textAlign="center" mb={6}>
+        Login
+      </Heading>
+      <VStack spacing={5}>
+        <FormControl isInvalid={errors.user_email}>
           <FormLabel>Email Address</FormLabel>
           <Input
             type="email"
-            placeholder="Enter your email address"
             name="user_email"
             value={values.user_email}
             onChange={handleChange}
+            placeholder="Enter your email"
+            bg="whiteAlpha.200"
+            _placeholder={{ color: "gray.400" }}
+            focusBorderColor="teal.500"
           />
+          {errors.user_email && (
+            <Alert status="error" mt={2} borderRadius="md">
+              <AlertIcon />
+              {errors.user_email}
+            </Alert>
+          )}
         </FormControl>
-        {/* Password input field in the form */}
-        <FormControl id="password" isRequired mb={4}>
+
+        <FormControl isInvalid={errors.user_password}>
           <FormLabel>Password</FormLabel>
           <Input
             type="password"
-            placeholder="Enter your password"
             name="user_password"
             value={values.user_password}
             onChange={handleChange}
+            placeholder="Enter your password"
+            bg="whiteAlpha.200"
+            _placeholder={{ color: "gray.400" }}
+            focusBorderColor="teal.500"
           />
+          {errors.user_password && (
+            <Alert status="error" mt={2} borderRadius="md">
+              <AlertIcon />
+              {errors.user_password}
+            </Alert>
+          )}
         </FormControl>
-        {/* Login button in the form */}
-        <Button type="submit" colorScheme="orange" size="lg" mb={4}>
+
+        <Button
+          type="submit"
+          colorScheme="teal"
+          size="lg"
+          isLoading={loading}
+          loadingText="Logging in"
+          w="full"
+        >
           Login
         </Button>
-        {/* Text for registering a new account */}
+
         <Text>
           Don't have an account?{" "}
-          <Link style={{
-            fontWeight:"bold",
-            color:"blue",
-            textDecoration:"underline"
-          }} to="/register">
+          <Link to="/register" style={{ color: "teal", fontWeight: "bold" }}>
             Register
           </Link>
         </Text>
-        {/* Text for password reset link */}
         <Text>
-          Forgot password?{" "}
-          <Link style={{
-            fontWeight:"bold",
-            color:"blue",
-            textDecoration:"underline"
-          }} to="/password-reset">
-            Click Here
+          Forgot your password?{" "}
+          <Link to="/password-reset" style={{ color: "teal", fontWeight: "bold" }}>
+            Reset it here
           </Link>
         </Text>
-      </Box>
-
-      {/* Display loading message if form submission is in progress */}
-      {loading && <span>loading...</span>}
-    </>
+      </VStack>
+    </Box>
   );
 };
 
-// Export the Login component as the default export
 export default Login;

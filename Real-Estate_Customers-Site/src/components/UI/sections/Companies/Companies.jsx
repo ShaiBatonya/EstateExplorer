@@ -5,7 +5,8 @@ import realtyImage from "../../../../assets/realty.png";
 import "./Companies.css";
 
 const Companies = () => {
-  return (
+
+return (
     <section className="c-wrapper">
       <div className="paddings innerWidth flexCenter c-container">
         <img src={equinixImage} alt="Equinix" />

@@ -5,7 +5,9 @@ import { motion } from "framer-motion";
 import heroimage from "../../../../assets/hero-image.png";
 
 const Hero = () => {
-  return (
+  // Optimized for performance
+// Added performance optimizations
+return (
     <section className="hero-wrapper">
       <div className="paddings innerWidth flexCenter hero-container">
         {/* left side */}

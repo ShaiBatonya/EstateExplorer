@@ -1,4 +1,3 @@
-// Import necessary Chakra UI components, React dependencies, and context
 import {
   Box,
   Heading,
@@ -7,134 +6,127 @@ import {
   Input,
   Button,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { Navigate, useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { z } from "zod";
 import { toast } from "react-toastify";
 
-// Register component for user registration
-const Register = () => {
-  // Access the navigation function and user data from AuthContext
-  const navigate = useNavigate();
-  const { user, register } = useContext(AuthContext);
-
-  // State variable for form values
-  const [values, setValues] = useState({
-    user_name: "",
-    user_email: "",
-    user_password: "",
-    user_password_confirm: "",
+const registerSchema = z
+  .object({
+    name: z.string().min(3, "Name must be at least 3 characters"),
+    email: z.string().email("Invalid email"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(6, "Confirmation must match password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
   });
 
-  // Handle change in form input values
+const Register = () => {
+  const { register } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [values, setValues] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
-    setValues((prevValues) => ({
-      ...prevValues,
-      [e.target.name]: e.target.value,
-    }));
+    setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission for user registration
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Check if password and confirm password match
-      if (values.user_password !== values.user_password_confirm) {
-        throw new Error("Passwords don't match");
-      }
-
-      // Call register function with form values
-      const response = await register(values);
-      toast.success(response.message);
-
-      // Redirect to login page after successful registration
+      registerSchema.parse(values);
+      setLoading(true);
+      await register(values);
+      toast.success("Registration successful!");
       navigate("/login");
     } catch (error) {
-      // Display error message if registration fails
-      return { success: false, error: error.response.data.error };
+      if (error instanceof z.ZodError) {
+        error.errors.forEach((err) => toast.error(err.message));
+      } else {
+        toast.error(error.message);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Redirect to home page if user is already logged in
-  if (user) {
-    return <Navigate to="/" />;
-  }
-
-  // Render the registration form
   return (
     <Box
-      as="form"
-      onSubmit={handleSubmit}
-      minH="65vh"
-      maxW="600px"
+      bg={useColorModeValue("gray.100", "gray.900")}
+      p={8}
+      borderRadius="md"
+      maxW="lg"
       mx="auto"
-      py={10}
-      px={4}
+      mt="10"
+      shadow="lg"
     >
-      {/* Heading for the registration form */}
-      <Heading as="h1" size="xl" mb={6}>
+      <Heading textAlign="center" mb={6}>
         Register
       </Heading>
-      {/* Form control for user's name */}
-      <FormControl isRequired mb={4}>
-        <FormLabel>Your Name</FormLabel>
-        <Input
-          name="user_name"
-          type="text"
-          placeholder="Enter your name"
-          value={values.user_name}
-          onChange={handleChange}
-        />
-      </FormControl>
-      {/* Form control for user's email */}
-      <FormControl isRequired mb={4}>
-        <FormLabel>Email Address</FormLabel>
-        <Input
-          name="user_email"
-          type="email"
-          placeholder="Enter your email address"
-          value={values.user_email}
-          onChange={handleChange}
-        />
-      </FormControl>
-      {/* Form control for user's password */}
-      <FormControl isRequired mb={4}>
-        <FormLabel>Password</FormLabel>
-        <Input
-          name="user_password"
-          type="password"
-          placeholder="Enter your password"
-          value={values.user_password}
-          onChange={handleChange}
-        />
-      </FormControl>
-      {/* Form control for confirming user's password */}
-      <FormControl isRequired mb={4}>
-        <FormLabel>Password Again</FormLabel>
-        <Input
-          name="user_password_confirm"
-          type="password"
-          placeholder="Enter your password"
-          value={values.user_password_confirm}
-          onChange={handleChange}
-        />
-      </FormControl>
-      {/* Button for submitting the registration form */}
-      <Button type="submit" colorScheme="orange" size="lg" mb={4}>
-        Register
-      </Button>
-      {/* Text for linking to the login page */}
-      <Text>
-        already have an account?{" "}
-        <Link
-          style={{
-            fontWeight: "bold",
-            color: "blue",
-            textDecoration: "underline",
-          }}
-          to="/login"
+      <Box as="form" onSubmit={handleSubmit}>
+        <FormControl id="name" mb={4} isRequired>
+          <FormLabel>Name</FormLabel>
+          <Input
+            type="text"
+            name="name"
+            placeholder="Enter your name"
+            value={values.name}
+            onChange={handleChange}
+          />
+        </FormControl>
+        <FormControl id="email" mb={4} isRequired>
+          <FormLabel>Email</FormLabel>
+          <Input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            value={values.email}
+            onChange={handleChange}
+          />
+        </FormControl>
+        <FormControl id="password" mb={4} isRequired>
+          <FormLabel>Password</FormLabel>
+          <Input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            value={values.password}
+            onChange={handleChange}
+          />
+        </FormControl>
+        <FormControl id="confirmPassword" mb={4} isRequired>
+          <FormLabel>Confirm Password</FormLabel>
+          <Input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm your password"
+            value={values.confirmPassword}
+            onChange={handleChange}
+          />
+        </FormControl>
+        <Button
+          type="submit"
+          colorScheme="teal"
+          w="full"
+          isLoading={loading}
+          loadingText="Registering"
         >
+          Register
+        </Button>
+      </Box>
+      <Text mt={4} textAlign="center">
+        Already have an account?{" "}
+        <Link to="/login" style={{ color: "teal", fontWeight: "bold" }}>
           Login
         </Link>
       </Text>
@@ -142,5 +134,4 @@ const Register = () => {
   );
 };
 
-// Export the Register component as the default export
 export default Register;

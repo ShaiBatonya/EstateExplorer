@@ -58,3 +58,43 @@
         font-size: .8rem;
     }
 }
+
+/* Professional Enhancements for Layout */
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+.hero-container, .stats {
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.animated-button {
+    transition: all 0.3s ease-in-out;
+}
+
+.animated-button:hover {
+    transform: scale(1.05);
+    background-color: #ff7eb3;
+    color: white;
+}
+
+/* Enhanced Responsive Breakpoints */
+@media (max-width: 480px) {
+    .responsive-text {
+        font-size: 1rem;
+    }
+    .hero-container {
+        padding: 0.5rem;
+    }
+}
+        

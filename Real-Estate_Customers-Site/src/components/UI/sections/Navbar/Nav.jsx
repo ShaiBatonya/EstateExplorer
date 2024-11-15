@@ -14,25 +14,27 @@ import { Link as RouterLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useContext } from "react";
 import { AuthContext } from "../../../../context/AuthContext";
+import { CartContext } from "../../../../context/CartContext";
 import { toast } from "react-toastify";
+import { FaShoppingCart } from "react-icons/fa";
 import './Nav.css';
-
 
 function Nav() {
   const { user, logout } = useContext(AuthContext);
+  const cartContext = useContext(CartContext);
+  const cartItems = cartContext?.cartItems || []; 
+  const { isOpen, onToggle } = useDisclosure();
 
   const handleLogout = async () => {
     try {
       const response = await logout();
       toast.success(response.message);
     } catch (error) {
-      toast.error(error.error);
+      toast.error(error.message);
     }
   };
 
-  const NAV_ITEMS = [
-    { label: "Home", to: "/" },
-  ];
+  const NAV_ITEMS = [{ label: "Home", to: "/" }];
 
   if (user) {
     NAV_ITEMS.push(
@@ -40,8 +42,6 @@ function Nav() {
       { label: "Contact", to: "/Contact" }
     );
   }
-
-  const { isOpen, onToggle } = useDisclosure();
 
   return (
     <Box
@@ -75,10 +75,7 @@ function Nav() {
         </Flex>
 
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.5 }}>
             <Heading as="h1" size="lg" fontWeight="bold">
               <ChakraLink
                 as={RouterLink}
@@ -95,52 +92,66 @@ function Nav() {
           </Flex>
         </Flex>
 
-        {user ? (
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              onClick={handleLogout}
-              as={RouterLink}
-              display={{ base: "none", md: "inline-flex" }}
-              fontSize="sm"
-              fontWeight={600}
-              color="white"
-              bg="blue.400"
-              className="nav-button"
-            >
-              Logout
-            </Button>
-          </motion.div>
-        ) : (
-          <Stack direction="row" spacing={4}>
+        <Stack direction="row" spacing={4} align="center">
+          {user && (
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <IconButton
+                as={RouterLink}
+                to="/cart"
+                icon={
+                  <Box position="relative">
+                    <FaShoppingCart />
+                    {cartItems.length > 0 && (
+                      <Box
+                        position="absolute"
+                        top="-1"
+                        right="-1"
+                        fontSize="xs"
+                        bg="red.500"
+                        color="white"
+                        borderRadius="full"
+                        w="4"
+                        h="4"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        {cartItems.length}
+                      </Box>
+                    )}
+                  </Box>
+                }
+                aria-label="Cart"
+                variant="ghost"
+                color="white"
+                fontSize="xl"
+              />
+            </motion.div>
+          )}
+
+          {user ? (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
-                as={RouterLink}
-                display={{ base: "none", md: "inline-flex" }}
+                onClick={handleLogout}
                 fontSize="sm"
                 fontWeight={600}
                 color="white"
-                bg="blue.900"
-                to="/login"
-                className="nav-button"
+                bg="blue.400"
               >
+                Logout
+              </Button>
+            </motion.div>
+          ) : (
+            <>
+              <Button as={RouterLink} to="/login" fontSize="sm" fontWeight={600} color="white" bg="blue.900">
                 Login
               </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                as={RouterLink}
-                fontSize="sm"
-                fontWeight={600}
-                color="white"
-                bg="green.400"
-                to="/Register"
-                className="nav-button"
-              >
+              <Button as={RouterLink} to="/Register" fontSize="sm" fontWeight={600} color="white" bg="green.400">
                 Register
               </Button>
-            </motion.div>
-          </Stack>
-        )}
+            </>
+          )}
+        </Stack>
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
@@ -154,21 +165,14 @@ const DesktopNav = ({ NAV_ITEMS }) => {
   return (
     <Stack direction="row" spacing={6}>
       {NAV_ITEMS.map((navItem) => (
-        <motion.div
-          key={navItem.label}
-          whileHover={{ scale: 1.1 }}
-          transition={{ duration: 0.3 }}
-        >
+        <motion.div key={navItem.label} whileHover={{ scale: 1.1 }} transition={{ duration: 0.3 }}>
           <ChakraLink
             as={RouterLink}
             to={navItem.to}
             fontSize="lg"
             fontWeight="600"
             color="white"
-            _hover={{
-              color: "gray.300",
-              textDecoration: "underline",
-            }}
+            _hover={{ color: "gray.300", textDecoration: "underline" }}
             transition="0.3s"
           >
             {navItem.label}
@@ -183,24 +187,18 @@ const MobileNav = ({ NAV_ITEMS }) => {
   return (
     <Stack bg="blue.600" p={4} display={{ md: "none" }}>
       {NAV_ITEMS.map((navItem) => (
-        <MobileNavItem key={navItem.label} {...navItem} />
+        <ChakraLink
+          key={navItem.label}
+          py={2}
+          as={RouterLink}
+          to={navItem.to}
+          fontWeight="600"
+          color="white"
+        >
+          {navItem.label}
+        </ChakraLink>
       ))}
     </Stack>
-  );
-};
-
-const MobileNavItem = ({ label, to }) => {
-  return (
-    <ChakraLink
-      py={2}
-      as={RouterLink}
-      to={to}
-      fontWeight="600"
-      color="white"
-      _hover={{ textDecoration: "none", color: "gray.300" }}
-    >
-      {label}
-    </ChakraLink>
   );
 };
 

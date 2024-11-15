@@ -1,46 +1,86 @@
 
 .c-wrapper {
-    padding: 2rem 0;
-    background-color: #f0f4f8;
-  }
-  
+  padding: 2rem 0;
+  background-color: #f0f4f8;
+}
 
-  .c-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
-  
-  
+
+.c-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+
+.c-container > img {
+  width: 10rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.c-container > img:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+@media (max-width: 768px) {
   .c-container > img {
-    width: 10rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 8rem;
   }
-  
+}
 
-  .c-container > img:hover {
-    transform: scale(1.1);
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  
-  @media (max-width: 768px) {
-    .c-container > img {
-      width: 8rem;
-    }
-  }
-  
 
-  @media (max-width: 480px) {
-    .c-container {
-      flex-direction: column;
-      gap: 2rem;
-    }
-  
-    .c-container > img {
-      width: 6rem;
-    }
+@media (max-width: 480px) {
+  .c-container {
+    flex-direction: column;
+    gap: 2rem;
   }
-  
+
+  .c-container > img {
+    width: 6rem;
+  }
+}
+
+
+/* Professional Enhancements for Layout */
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.hero-container, .stats {
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+.animated-button {
+  transition: all 0.3s ease-in-out;
+}
+
+.animated-button:hover {
+  transform: scale(1.05);
+  background-color: #ff7eb3;
+  color: white;
+}
+
+/* Enhanced Responsive Breakpoints */
+@media (max-width: 480px) {
+  .responsive-text {
+      font-size: 1rem;
+  }
+  .hero-container {
+      padding: 0.5rem;
+  }
+}
+      
