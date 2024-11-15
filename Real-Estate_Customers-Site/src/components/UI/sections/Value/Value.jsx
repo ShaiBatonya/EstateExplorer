@@ -1,92 +1,134 @@
-import  { useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { useEffect, useRef } from "react";
 import {
   Accordion,
   AccordionItem,
   AccordionItemHeading,
   AccordionItemButton,
   AccordionItemPanel,
-  AccordionItemState,
 } from "react-accessible-accordion";
-import "react-accessible-accordion/dist/fancy-example.css";
-import { MdOutlineArrowDropDown } from "react-icons/md";
 import { HiShieldCheck } from "react-icons/hi";
-import { MdCancel, MdAnalytics } from "react-icons/md";
+import { MdCancel, MdAnalytics, MdOutlineArrowDropDown } from "react-icons/md";
 import valueImage from "../../../../assets/value.png";
 import "./Value.css";
 
-// Define data outside the component
-const data = [
-  {
-    icon: <HiShieldCheck />,
-    heading: "Best interest rates on the market",
-    detail:
-      "Exercitation in fugiat est ut ad ea cupidatat ut in cupidatat occaecat ut occaecat consequat est minim minim esse tempor laborum consequat esse adipisicing eu reprehenderit enim.",
-  },
-  {
-    icon: <MdCancel />,
-    heading: "Prevent unstable prices",
-    detail:
-      "Exercitation in fugiat est ut ad ea cupidatat ut in cupidatat occaecat ut occaecat consequat est minim minim esse tempor laborum consequat esse adipisicing eu reprehenderit enim.",
-  },
-  {
-    icon: <MdAnalytics />,
-    heading: "Best price on the market",
-    detail:
-      "Exercitation in fugiat est ut ad ea cupidatat ut in cupidatat occaecat ut occaecat consequat est minim minim esse tempor laborum consequat esse adipisicing eu reprehenderit enim.",
-  },
-];
-
 const Value = () => {
+  const controls = useAnimation();
+  const ref = useRef(null);
+
+  const handleIntersection = (entries) => {
+    const [entry] = entries;
+    if (entry.isIntersecting) {
+      controls.start("visible");
+    } else {
+      controls.start("hidden");
+    }
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleIntersection, {
+      root: null,
+      threshold: 0.3, // Trigger animation when 30% of the section is visible
+    });
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) observer.unobserve(ref.current);
+    };
+  }, [controls]);
+
+  const fadeIn = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 1, ease: "easeOut" },
+    },
+  };
+
   return (
-    <section id="value" className="v-wrapper">
-      <div className="paddings innerWidth flexCenter v-container">
-        {/* left side */}
+    <section id="value" className="v-wrapper" ref={ref}>
+      <motion.div
+        initial="hidden"
+        animate={controls}
+        variants={fadeIn}
+        className="paddings innerWidth flexCenter v-container"
+      >
+        {/* Left Side */}
         <div className="v-left">
-          <div className="image-container">
-            <img src={valueImage} alt="" />
-          </div>
+          <motion.div
+            initial="hidden"
+            animate={controls}
+            variants={{
+              hidden: { opacity: 0, scale: 0.8 },
+              visible: { opacity: 1, scale: 1, transition: { duration: 1.2 } },
+            }}
+            className="image-container"
+          >
+            <img src={valueImage} alt="Value Section" />
+          </motion.div>
         </div>
 
-        {/* right */}
-        <div className="flexColStart v-right" >
+        {/* Right Side */}
+        <div className="flexColStart v-right">
           <span className="orangeText">Our Value</span>
-
-          <span className="primaryText">Value We Give to You</span>
-
-          <span className="secondaryText">
-            We are always ready to help by providing the best services for you.
-            <br />
-            We believe a good place to live can make your life better
-          </span>
-
-          <Accordion
-            className="accordion"
-            allowMultipleExpanded={false}
-            preExpanded={[0]}
+          <motion.span
+            initial="hidden"
+            animate={controls}
+            variants={fadeIn}
+            className="primaryText"
           >
-            {data.map((item, i) => (
-              <AccordionItem
-                className="accordionItem"
-                uuid={i}
-                key={i}
-              >
+            Value We Give to You
+          </motion.span>
+          <motion.span
+            initial="hidden"
+            animate={controls}
+            variants={fadeIn}
+            className="secondaryText"
+          >
+            We provide top-notch services ensuring your dream home is a reality.
+          </motion.span>
+
+          <Accordion allowZeroExpanded className="accordion">
+            {[
+              {
+                icon: <HiShieldCheck />,
+                heading: "Best interest rates on the market",
+                detail:
+                  "Get the best rates for your dream home with us.",
+              },
+              {
+                icon: <MdCancel />,
+                heading: "Prevent unstable prices",
+                detail:
+                  "We ensure stability and transparency in all deals.",
+              },
+              {
+                icon: <MdAnalytics />,
+                heading: "Best price on the market",
+                detail:
+                  "Unlock exclusive property deals and unmatched prices.",
+              },
+            ].map((item, i) => (
+              <AccordionItem key={i} uuid={i} className="accordionItem">
                 <AccordionItemHeading>
-                  <AccordionItemButton className="flexCenter accordionButton ">
-                    <div className="flexCenter icon">{item.icon}</div>
-                    <span className="primaryText">{item.heading}</span>
-                    <div className="flexCenter icon">
-                      <MdOutlineArrowDropDown size={20} />
-                    </div>
+                  <AccordionItemButton className="accordionButton">
+                    <div className="icon">{item.icon}</div>
+                    <span>{item.heading}</span>
+                    <MdOutlineArrowDropDown />
                   </AccordionItemButton>
                 </AccordionItemHeading>
                 <AccordionItemPanel>
-                  <p className="secondaryText">{item.detail}</p>
+                  <p>{item.detail}</p>
                 </AccordionItemPanel>
               </AccordionItem>
             ))}
           </Accordion>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

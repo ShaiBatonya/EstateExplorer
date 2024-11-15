@@ -1,76 +1,122 @@
 import "./Hero.css";
 import { HiLocationMarker } from "react-icons/hi";
 import CountUp from "react-countup";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
+import { useEffect, useRef } from "react";
 import heroimage from "../../../../assets/hero-image.png";
 
 const Hero = () => {
-  // Optimized for performance
-// Added performance optimizations
-return (
-    <section className="hero-wrapper">
-      <div className="paddings innerWidth flexCenter hero-container">
-        {/* left side */}
+  const controls = useAnimation();
+  const ref = useRef(null);
+
+  const handleIntersection = (entries) => {
+    const [entry] = entries;
+    if (entry.isIntersecting) {
+      controls.start("visible");
+    } else {
+      controls.start("hidden");
+    }
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleIntersection, {
+      root: null,
+      threshold: 0.3,
+    });
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) observer.unobserve(ref.current);
+    };
+  }, [controls]);
+
+  const fadeIn = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
+  return (
+    <section className="hero-wrapper" ref={ref}>
+      <motion.div
+        initial="hidden"
+        animate={controls}
+        variants={fadeIn}
+        className="paddings innerWidth flexCenter hero-container"
+      >
+        {/* Left Side */}
         <div className="flexColStart hero-left">
           <div className="hero-title">
-            <div className="orange-circle" />
+            <motion.div
+              className="orange-circle"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1, type: "spring" }}
+            />
             <motion.h1
-              initial={{ y: "2rem", opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{
-                duration: 2,
-                type: "ease-in",
-              }}
+              initial="hidden"
+              animate={controls}
+              variants={fadeIn}
             >
-              Find Your Dream <br />
-              Living Space
-              <br /> Property
+              Discover Your Dream <br />
+              Living Space <br /> Property
             </motion.h1>
           </div>
 
-          <div className="flexColStart secondaryText flexhero-des">
-            <span>Welcome to our exceptional real estate properties available for purchase.</span>
-          </div>
+          <motion.div
+            className="flexColStart secondaryText flexhero-des"
+            initial="hidden"
+            animate={controls}
+            variants={fadeIn}
+            transition={{ delay: 0.3, duration: 1 }}
+          >
+            <span>
+              Welcome to our exclusive real estate properties available for
+              purchase.
+            </span>
+          </motion.div>
 
           <div className="flexCenter stats">
-            <div className="flexColCenter stat">
-              <span>
-                <CountUp start={8800} end={9879} duration={4} /> <span>+</span>
-              </span>
-              <span className="secondaryText">Premium Product</span>
-            </div>
-
-            <div className="flexColCenter stat">
-              <span>
-                <CountUp start={1950} end={2500} duration={4} /> <span>+</span>
-              </span>
-              <span className="secondaryText">Happy Customer</span>
-            </div>
-
-            <div className="flexColCenter stat">
-              <span>
-                <CountUp end={41} /> <span>+</span>
-              </span>
-              <span className="secondaryText">Awards Winning</span>
-            </div>
+            {[
+              { start: 8800, end: 9879, label: "Premium Products" },
+              { start: 1950, end: 2500, label: "Happy Customers" },
+              { start: 0, end: 41, label: "Awards Won" },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                className="flexColCenter stat"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 200 }}
+              >
+                <span>
+                  <CountUp start={stat.start} end={stat.end} duration={3} />{" "}
+                  <span>+</span>
+                </span>
+                <span className="secondaryText">{stat.label}</span>
+              </motion.div>
+            ))}
           </div>
         </div>
 
-        {/* right side */}
+        {/* Right Side */}
         <div className="flexCenter hero-right">
           <motion.div
             initial={{ x: "7rem", opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{
-              duration: 2,
-              type: "ease-in",
-            }}
+            animate={controls}
+            variants={fadeIn}
+            transition={{ duration: 1.2, type: "spring" }}
             className="image-container"
           >
             <img src={heroimage} alt="houses" />
           </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

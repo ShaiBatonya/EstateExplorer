@@ -1,34 +1,47 @@
-import { useContext, useEffect, useState, useMemo, useCallback } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import ProductCard from "../../../components/UI/partials/products/ProductCard";
-import axiosInstance from "../../../config/axiosConfig";
-import { AuthContext } from "../../../context/AuthContext";
-import { BsSearchHeart } from "react-icons/bs";
+import {
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  lazy,
+  Suspense,
+} from "react";
+import { Helmet } from "react-helmet";
 import {
   Box,
   Heading,
   Flex,
-  HStack,
+  Wrap,
+  WrapItem,
   Button,
-  IconButton,
   Input,
   InputGroup,
   InputRightElement,
   Grid,
   GridItem,
-  Wrap,
-  WrapItem,
+  IconButton,
   useToast,
+  VStack,
+  Spinner,
+  Text,
 } from "@chakra-ui/react";
-import Pagination from "./Pagination";
-import { Helmet } from "react-helmet";
-import Value from "../../../components/UI/sections/Value/Value";
-import Hero from "../../../components/UI/sections/Hero/Hero";
-import Companies from "../../../components/UI/sections/Companies/Companies";
+import { BsSearchHeart } from "react-icons/bs";
 import { motion } from "framer-motion";
+import debounce from "lodash/debounce";
+import axiosInstance from "../../../config/axiosConfig";
+import Pagination from "./Pagination";
+import { AuthContext } from "../../../context/AuthContext";
 
-// Function to fetch categories
+// Lazy Load Components
+const Hero = lazy(() => import("../../../components/UI/sections/Hero/Hero"));
+const Companies = lazy(() => import("../../../components/UI/sections/Companies/Companies"));
+const Value = lazy(() => import("../../../components/UI/sections/Value/Value"));
+const ProductCard = lazy(() => import("../../../components/UI/partials/products/ProductCard"));
+const LoadingSpinner = lazy(() => import("../../../components/UI/partials/products/LoadingSpinner"));
+
+const MotionBox = motion(Box);
+
 const fetchCategories = async () => {
   try {
     const { data } = await axiosInstance.get("/categories/customers/all");
@@ -39,7 +52,6 @@ const fetchCategories = async () => {
   }
 };
 
-// Function to fetch products
 const fetchProducts = async () => {
   try {
     const { data } = await axiosInstance.get("/products/customers/all");
@@ -63,8 +75,7 @@ function Home() {
 
   useEffect(() => {
     (async () => {
-      const categories = await fetchCategories();
-      setCategories(categories);
+      setCategories(await fetchCategories());
     })();
   }, []);
 
@@ -104,9 +115,16 @@ function Home() {
     setCurrentPage(1);
   }, []);
 
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      setSearchTerm(value);
+    }, 300),
+    []
+  );
+
   const handleSearchChange = useCallback((e) => {
-    setSearchTerm(e.target.value);
-  }, []);
+    debouncedSearch(e.target.value);
+  }, [debouncedSearch]);
 
   const handlePageChange = useCallback((page) => {
     setCurrentPage(page);
@@ -116,74 +134,118 @@ function Home() {
     <>
       <Helmet>
         <title>Global Real Estate Platform</title>
-        <meta name="description" content="Explore a global collection of exquisite real estate properties." />
+        <meta
+          name="description"
+          content="Explore a global collection of exquisite real estate properties."
+        />
       </Helmet>
 
-      <Hero />
-      <Companies />
+      <Suspense fallback={<LoadingSpinner />}>
+        <Hero />
+      </Suspense>
 
-      <Box px={8} py={8} mx="auto" bg="black" color="white">
-        <Heading as="h2" size="xl" textAlign="center" mb={6} color="teal.300">
+      <Suspense fallback={<LoadingSpinner />}>
+        <Companies />
+      </Suspense>
+
+      <MotionBox
+        px={10}
+        py={12}
+        mx="auto"
+        bgGradient="linear(to-br, black, gray.900)"
+        color="white"
+        borderRadius="xl"
+        shadow="2xl"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1 }}
+      >
+        <Heading
+          as="h2"
+          size="2xl"
+          textAlign="center"
+          mb={8}
+          bgGradient="linear(to-r, teal.300, blue.400, purple.500)"
+          bgClip="text"
+          fontWeight="extrabold"
+          letterSpacing="widest"
+        >
           Explore Global Properties
         </Heading>
 
-        <Flex justify="space-between" align="center" wrap="wrap" mb={6}>
-          <Wrap spacing={4} align="center">
+        <Flex justify="space-between" align="center" wrap="wrap" mb={8}>
+          <Wrap spacing={6} align="center">
             <WrapItem>
-              <Button
-                onClick={() => handleFilterByCategory(null)}
-                variant={filterStatus === null ? "solid" : "outline"}
-                colorScheme="teal"
-              >
-                All
-              </Button>
+              <motion.div whileHover={{ scale: 1.3 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  onClick={() => handleFilterByCategory(null)}
+                  variant={filterStatus === null ? "solid" : "ghost"}
+                  bgGradient={filterStatus === null ? "linear(to-r, teal.400, teal.600)" : undefined}
+                  color={filterStatus === null ? "white" : "teal.300"}
+                  size="lg"
+                  shadow="xl"
+                >
+                  All
+                </Button>
+              </motion.div>
             </WrapItem>
             {categories.map((category) => (
               <WrapItem key={category._id}>
-                <Button
-                  onClick={() => handleFilterByCategory(category._id)}
-                  variant={filterStatus === category._id ? "solid" : "outline"}
-                  colorScheme="teal"
-                >
-                  {category.category_name}
-                </Button>
+                <motion.div whileHover={{ scale: 1.3 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    onClick={() => handleFilterByCategory(category._id)}
+                    variant={filterStatus === category._id ? "solid" : "ghost"}
+                    bgGradient={
+                      filterStatus === category._id ? "linear(to-r, teal.400, teal.600)" : undefined
+                    }
+                    color={filterStatus === category._id ? "white" : "teal.300"}
+                    size="lg"
+                    shadow="xl"
+                  >
+                    {category.category_name}
+                  </Button>
+                </motion.div>
               </WrapItem>
             ))}
           </Wrap>
 
-          <InputGroup maxW="400px">
+          <InputGroup maxW="450px">
             <Input
-              placeholder="Search products..."
-              value={searchTerm}
+              placeholder="Search properties..."
               onChange={handleSearchChange}
-              borderRadius="md"
+              size="lg"
+              borderRadius="lg"
               bg="gray.800"
               color="white"
               _placeholder={{ color: "gray.400" }}
+              shadow="xl"
             />
             <InputRightElement>
               <IconButton
                 aria-label="Search"
                 icon={<BsSearchHeart />}
-                onClick={() => toast({ title: "Search applied", status: "info" })}
+                colorScheme="teal"
+                size="lg"
+                shadow="xl"
               />
             </InputRightElement>
           </InputGroup>
         </Flex>
 
         <Grid
-          templateColumns={{ base: "repeat(1, 1fr)", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }}
-          gap={6}
-          bg="gray.900"
-          p={6}
-          borderRadius="lg"
-          shadow="lg"
+          templateColumns={{
+            base: "repeat(1, 1fr)",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+            lg: "repeat(4, 1fr)",
+          }}
+          gap={8}
         >
           {currentProducts.map((product) => (
             <GridItem key={product._id}>
-              <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
+              <Suspense fallback={<Spinner color="teal.300" />}>
                 <ProductCard product={product} />
-              </motion.div>
+              </Suspense>
             </GridItem>
           ))}
         </Grid>
@@ -194,15 +256,14 @@ function Home() {
           totalProducts={filteredProducts.length}
           onPageChange={handlePageChange}
         />
-      </Box>
+      </MotionBox>
 
-      <Value />
+      <Suspense fallback={<LoadingSpinner />}>
+        <Value />
+      </Suspense>
     </>
   );
 }
-
-
-
 
 
 // Fetch all products function

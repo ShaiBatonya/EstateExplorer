@@ -4,8 +4,7 @@
   z-index: 1;
   padding-bottom: 2rem;
   height: auto;
-  background-color: #000;
-  /* Enhanced for better UI/UX */
+  background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
 }
 
 .hero-container {
@@ -13,8 +12,10 @@
   justify-content: space-around;
   align-items: flex-end;
   font-weight: bold;
-  flex-wrap: wrap; /* התאמה למובייל */
-  /* Enhanced for better UI/UX */
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem 1rem;
+  animation: fadeInHero 1.5s ease-in-out;
 }
 
 .hero-left {
@@ -23,183 +24,188 @@
   align-items: center;
   gap: 3rem;
   padding: 3vw;
-  text-align: center; /* התאמה למובייל */
-  /* Enhanced for better UI/UX */
+  text-align: center;
 }
 
 .hero-title {
   position: relative;
   z-index: 1;
-  /* Enhanced for better UI/UX */
 }
 
 .hero-title > h1 {
-  font-weight: 600;
-  font-size: 3.8rem;
-  line-height: 4rem;
+  font-weight: 700;
+  font-size: 4.2rem;
+  line-height: 4.5rem;
   color: #fff;
   text-align: center;
-  /* Enhanced for better UI/UX */
+  letter-spacing: 0.05em;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .orange-circle {
   height: 4rem;
   width: 4rem;
-  background: linear-gradient(135deg, #FFA500, #FF4500); /* צבע כתום לגרדיאנט */
+  background: linear-gradient(135deg, #ffa500, #ff4500);
   border-radius: 50%;
   position: absolute;
   right: 50%;
   top: -10%;
   transform: translateX(50%);
   z-index: -1;
-  /* Enhanced for better UI/UX */
+  box-shadow: 0 4px 15px rgba(255, 145, 0, 0.5);
 }
 
 .flexCenter {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Enhanced for better UI/UX */
 }
 
 .flexColStart {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  /* Enhanced for better UI/UX */
 }
 
-/* Stats section */
+/* Stats Section */
 .stats {
   width: 100%;
   display: flex;
   justify-content: space-around;
-  gap: 2rem;
-  flex-wrap: wrap; /* התאמה למובייל */
-  /* Enhanced for better UI/UX */
+  gap: 3rem;
+  flex-wrap: wrap;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Enhanced for better UI/UX */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat:hover {
+  transform: scale(1.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 .stat > :nth-child(1) {
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: #fff;
-  /* Enhanced for better UI/UX */
 }
 
 .stat > :nth-child(1) > :last-child {
-  color: #FFA500;
-  /* Enhanced for better UI/UX */
+  color: #ffa500;
 }
 
 .stat > :nth-child(2) {
-  font-size: 1.2rem;
-  color: #f0f0f0;
-  text-align: center; /* התאמה לרספונסיביות */
-  /* Enhanced for better UI/UX */
+  font-size: 1.3rem;
+  color: #d3d3d3;
+  text-align: center;
 }
 
 .image-container {
-  width: 30rem;
+  width: 100%;
+  max-width: 30rem;
   height: 35rem;
   overflow: hidden;
+  margin-left: auto; /* מיקום הבסיס */
   border-radius: 15rem 15rem 0 0;
-  border: 8px solid rgba(255, 255, 255, 0.12);
-  /* Enhanced for better UI/UX */
+  background: linear-gradient(135deg, rgba(60, 60, 60, 0.9), rgba(20, 20, 20, 0.95));
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+
+  /* הוספת הזזה שמאלה */
+  transform: translateX(-10px); /* הזזה שמאלה ב-10 פיקסלים */
+}
+
+.image-container:hover {
+  transform: translateX(-10px) translateY(-10px); /* הזזה למעלה ולשמאלה */
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
 }
 
 .image-container > img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  filter: brightness(0.9);
-  /* Enhanced for better UI/UX */
+  object-position: left center; /* יישור נוסף שמאלה */
+  filter: brightness(0.9) contrast(1.2);
+  transition: transform 0.5s ease, filter 0.3s ease;
 }
 
-/* Mobile screens */
+.image-container:hover > img {
+  transform: scale(1.1);
+  filter: brightness(1) contrast(1.4);
+}
+
+/* Mobile Screens */
 @media (max-width: 640px) {
   .hero-container {
-    margin-top: 2rem;
     flex-direction: column;
     align-items: center;
-    /* Enhanced for better UI/UX */
-}
+  }
 
   .hero-title > h1 {
-    font-size: 2.5rem;
-    line-height: 3rem;
-    /* Enhanced for better UI/UX */
-}
+    font-size: 3rem;
+    line-height: 3.5rem;
+  }
 
   .image-container {
-    width: 95%;
+    width: 90%;
     height: 25rem;
-    border-radius: 10rem 10rem 0 0;
-    /* Enhanced for better UI/UX */
-}
+    border-radius: 12rem 12rem 0 0;
+  }
 
   .stats {
     justify-content: center;
     gap: 1.5rem;
-    font-weight: wrap;
-    /* Enhanced for better UI/UX */
-}
+  }
 
   .stat > :nth-child(1) {
-    font-size: 1.5rem;
-    /* Enhanced for better UI/UX */
-}
+    font-size: 1.8rem;
+  }
 
   .stat > :nth-child(2) {
-    font-size: 0.8rem;
-    /* Enhanced for better UI/UX */
-}
-  /* Enhanced for better UI/UX */
+    font-size: 1rem;
+  }
 }
 
-
-/* Professional Enhancements for Layout */
-body, html {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
+/* Animation Keyframes */
+@keyframes fadeInHero {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.container {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 0 15px;
-    box-sizing: border-box;
+/* New Styling Enhancements */
+.hero-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent 70%);
+  pointer-events: none;
 }
 
-.hero-container, .stats {
-    padding: 0 1rem;
-    box-sizing: border-box;
+.hero-title > h1::after {
+  content: '';
+  display: block;
+  width: 5rem;
+  height: 0.4rem;
+  background: #ff9f1a;
+  margin: 1rem auto;
+  border-radius: 1rem;
 }
 
-.animated-button {
-    transition: all 0.3s ease-in-out;
+.stats .stat {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 1rem;
+  border-radius: 1rem;
 }
-
-.animated-button:hover {
-    transform: scale(1.05);
-    background-color: #ff7eb3;
-    color: white;
-}
-
-/* Enhanced Responsive Breakpoints */
-@media (max-width: 480px) {
-    .responsive-text {
-        font-size: 1rem;
-    }
-    .hero-container {
-        padding: 0.5rem;
-    }
-}
-        
