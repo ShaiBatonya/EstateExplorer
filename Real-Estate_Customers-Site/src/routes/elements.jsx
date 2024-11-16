@@ -1,8 +1,8 @@
-// routes/elements.js
 import { Suspense, lazy } from "react";
+import { Spinner } from "@chakra-ui/react";
 
 const Loadable = (Component) => (props) => (
-  <Suspense fallback={<div>...loading</div>}>
+  <Suspense fallback={<Spinner size="xl" color="teal.500" />}>
     <Component {...props} />
   </Suspense>
 );

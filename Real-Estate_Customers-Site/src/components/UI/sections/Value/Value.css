@@ -139,7 +139,7 @@
   }
 }
 
-/* רספונסיביות מוגברת */
+
 @media (max-width: 768px) {
   .v-container {
     flex-direction: column;

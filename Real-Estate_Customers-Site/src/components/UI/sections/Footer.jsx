@@ -8,8 +8,35 @@ import {
   VisuallyHidden,
   chakra,
   useColorModeValue,
+  Avatar,
 } from "@chakra-ui/react";
 import { FaTwitter, FaYoutube, FaInstagram, FaApple, FaGooglePlay } from "react-icons/fa";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/autoplay";
+import { Pagination, Autoplay } from "swiper/modules";
+
+const testimonials = [
+  {
+    text: "Amazing service, very professional!",
+    name: "Emily Johnson",
+    role: "Luxury Consultant",
+    avatar: "https://i.pravatar.cc/300?img=1",
+  },
+  {
+    text: "Found the perfect property easily!",
+    name: "Michael Brown",
+    role: "Market Analyst",
+    avatar: "https://i.pravatar.cc/300?img=2",
+  },
+  {
+    text: "Highly recommend, fantastic experience!",
+    name: "Sarah Lee",
+    role: "Property Specialist",
+    avatar: "https://i.pravatar.cc/300?img=3",
+  },
+];
 
 const ListHeader = ({ children }) => (
   <Text fontWeight="500" fontSize="lg" mb={2}>
@@ -104,6 +131,51 @@ export default function Footer() {
             </SocialButton>
           </Stack>
         </Container>
+      </Box>
+
+      <Box py={10}>
+        <Text fontSize="xl" fontWeight="bold" textAlign="center" mb={4}>
+          What Our Clients Say
+        </Text>
+        <Swiper
+          spaceBetween={30}
+          slidesPerView={1}
+          pagination={{ clickable: true }}
+          autoplay={{ delay: 5000 }}
+          modules={[Pagination, Autoplay]}
+          breakpoints={{
+            640: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+          }}
+        >
+          {testimonials.map((testimonial, index) => (
+            <SwiperSlide key={index}>
+              <Box
+                p={5}
+                bg="gray.800"
+                borderRadius="lg"
+                shadow="lg"
+                textAlign="center"
+                maxW="sm"
+                mx="auto"
+              >
+                <Avatar
+                  src={testimonial.avatar}
+                  size="xl"
+                  mb={4}
+                  mx="auto"
+                  border="2px solid teal"
+                />
+                <Text fontSize="lg" mb={2}>"{testimonial.text}"</Text>
+                <Text fontWeight="bold">{testimonial.name}</Text>
+                <Text fontSize="sm" color="gray.400">
+                  {testimonial.role}
+                </Text>
+              </Box>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </Box>
     </Box>
   );

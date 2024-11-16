@@ -21,50 +21,25 @@ import {
   Grid,
   GridItem,
   IconButton,
-  useToast,
-  VStack,
   Spinner,
-  Text,
 } from "@chakra-ui/react";
 import { BsSearchHeart } from "react-icons/bs";
 import { motion } from "framer-motion";
 import debounce from "lodash/debounce";
 import axiosInstance from "../../../config/axiosConfig";
-import Pagination from "./Pagination";
 import { AuthContext } from "../../../context/AuthContext";
 
-// Lazy Load Components
 const Hero = lazy(() => import("../../../components/UI/sections/Hero/Hero"));
 const Companies = lazy(() => import("../../../components/UI/sections/Companies/Companies"));
 const Value = lazy(() => import("../../../components/UI/sections/Value/Value"));
 const ProductCard = lazy(() => import("../../../components/UI/partials/products/ProductCard"));
 const LoadingSpinner = lazy(() => import("../../../components/UI/partials/products/LoadingSpinner"));
+const Pagination = lazy(() => import("./Pagination"));
 
 const MotionBox = motion(Box);
 
-const fetchCategories = async () => {
-  try {
-    const { data } = await axiosInstance.get("/categories/customers/all");
-    return data.categories || [];
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    return [];
-  }
-};
-
-const fetchProducts = async () => {
-  try {
-    const { data } = await axiosInstance.get("/products/customers/all");
-    return data.products || [];
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return [];
-  }
-};
-
-function Home() {
+const Home = () => {
   const { user } = useContext(AuthContext);
-  const toast = useToast();
   const [categories, setCategories] = useState([]);
   const [productsInit, setProductsInit] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -74,17 +49,30 @@ function Home() {
   const productsPerPage = 8;
 
   useEffect(() => {
-    (async () => {
-      setCategories(await fetchCategories());
-    })();
+    const fetchCategories = async () => {
+      try {
+        const { data } = await axiosInstance.get("/categories/customers/all");
+        setCategories(data.categories || []);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
   useEffect(() => {
-    (async () => {
-      const products = await fetchProducts();
-      setProductsInit(products);
-      setFilteredProducts(products);
-    })();
+    const fetchProducts = async () => {
+      try {
+        const { data } = await axiosInstance.get("/products/customers/all");
+        setProductsInit(data.products || []);
+        setFilteredProducts(data.products || []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   useEffect(() => {
@@ -116,28 +104,19 @@ function Home() {
   }, []);
 
   const debouncedSearch = useCallback(
-    debounce((value) => {
-      setSearchTerm(value);
-    }, 300),
+    debounce((value) => setSearchTerm(value), 300),
     []
   );
 
-  const handleSearchChange = useCallback((e) => {
-    debouncedSearch(e.target.value);
-  }, [debouncedSearch]);
+  const handleSearchChange = useCallback((e) => debouncedSearch(e.target.value), [debouncedSearch]);
 
-  const handlePageChange = useCallback((page) => {
-    setCurrentPage(page);
-  }, []);
+  const handlePageChange = useCallback((page) => setCurrentPage(page), []);
 
   return (
     <>
       <Helmet>
         <title>Global Real Estate Platform</title>
-        <meta
-          name="description"
-          content="Explore a global collection of exquisite real estate properties."
-        />
+        <meta name="description" content="Explore a global collection of exquisite real estate properties." />
       </Helmet>
 
       <Suspense fallback={<LoadingSpinner />}>
@@ -152,7 +131,7 @@ function Home() {
         px={10}
         py={12}
         mx="auto"
-        bgGradient="linear(to-br, black, gray.900)"
+        bgGradient="linear(to-br, gray.800, black)"
         color="white"
         borderRadius="xl"
         shadow="2xl"
@@ -176,7 +155,7 @@ function Home() {
         <Flex justify="space-between" align="center" wrap="wrap" mb={8}>
           <Wrap spacing={6} align="center">
             <WrapItem>
-              <motion.div whileHover={{ scale: 1.3 }} whileTap={{ scale: 0.95 }}>
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   onClick={() => handleFilterByCategory(null)}
                   variant={filterStatus === null ? "solid" : "ghost"}
@@ -191,7 +170,7 @@ function Home() {
             </WrapItem>
             {categories.map((category) => (
               <WrapItem key={category._id}>
-                <motion.div whileHover={{ scale: 1.3 }} whileTap={{ scale: 0.95 }}>
+                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                   <Button
                     onClick={() => handleFilterByCategory(category._id)}
                     variant={filterStatus === category._id ? "solid" : "ghost"}
@@ -250,12 +229,14 @@ function Home() {
           ))}
         </Grid>
 
-        <Pagination
-          currentPage={currentPage}
-          productsPerPage={productsPerPage}
-          totalProducts={filteredProducts.length}
-          onPageChange={handlePageChange}
-        />
+        <Suspense fallback={<Spinner color="teal.300" />}>
+          <Pagination
+            currentPage={currentPage}
+            productsPerPage={productsPerPage}
+            totalProducts={filteredProducts.length}
+            onPageChange={handlePageChange}
+          />
+        </Suspense>
       </MotionBox>
 
       <Suspense fallback={<LoadingSpinner />}>
@@ -263,7 +244,8 @@ function Home() {
       </Suspense>
     </>
   );
-}
+};
+
 
 
 // Fetch all products function
