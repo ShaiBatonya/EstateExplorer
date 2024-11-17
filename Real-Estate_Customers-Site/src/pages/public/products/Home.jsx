@@ -35,7 +35,6 @@ const Value = lazy(() => import("../../../components/UI/sections/Value/Value"));
 const ProductCard = lazy(() => import("../../../components/UI/partials/products/ProductCard"));
 const LoadingSpinner = lazy(() => import("../../../components/UI/partials/products/LoadingSpinner"));
 const Pagination = lazy(() => import("./Pagination"));
-
 const MotionBox = motion(Box);
 
 const Home = () => {
@@ -133,7 +132,7 @@ const Home = () => {
         mx="auto"
         bgGradient="linear(to-br, gray.800, black)"
         color="white"
-        borderRadius="xl"
+     
         shadow="2xl"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}

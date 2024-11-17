@@ -5,72 +5,55 @@ import {
   SimpleGrid,
   Text,
   Link,
-  VisuallyHidden,
   chakra,
   useColorModeValue,
-  Avatar,
 } from "@chakra-ui/react";
 import { FaTwitter, FaYoutube, FaInstagram, FaApple, FaGooglePlay } from "react-icons/fa";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/autoplay";
-import { Pagination, Autoplay } from "swiper/modules";
-
-const testimonials = [
-  {
-    text: "Amazing service, very professional!",
-    name: "Emily Johnson",
-    role: "Luxury Consultant",
-    avatar: "https://i.pravatar.cc/300?img=1",
-  },
-  {
-    text: "Found the perfect property easily!",
-    name: "Michael Brown",
-    role: "Market Analyst",
-    avatar: "https://i.pravatar.cc/300?img=2",
-  },
-  {
-    text: "Highly recommend, fantastic experience!",
-    name: "Sarah Lee",
-    role: "Property Specialist",
-    avatar: "https://i.pravatar.cc/300?img=3",
-  },
-];
 
 const ListHeader = ({ children }) => (
-  <Text fontWeight="500" fontSize="lg" mb={2}>
+  <Text
+    fontWeight="700"
+    fontSize="lg"
+    mb={2}
+    color="teal.300"
+    _hover={{ textDecoration: "underline", color: "teal.400" }}
+  >
     {children}
   </Text>
 );
 
 const SocialButton = ({ children, label, href }) => (
   <chakra.button
-    bg={useColorModeValue("blackAlpha.100", "whiteAlpha.100")}
+    bg="linear-gradient(135deg, #2193b0, #6dd5ed)"
     rounded="full"
-    w={8}
-    h={8}
+    w={10}
+    h={10}
     cursor="pointer"
     as="a"
     href={href}
     display="inline-flex"
     alignItems="center"
     justifyContent="center"
-    transition="background 0.3s ease"
+    transition="transform 0.3s ease, background 0.3s ease"
     _hover={{
-      bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
+      transform: "scale(1.2)",
+      bg: "linear-gradient(135deg, #6dd5ed, #2193b0)",
     }}
   >
-    <VisuallyHidden>{label}</VisuallyHidden>
+    <Text srOnly>{label}</Text>
     {children}
   </chakra.button>
 );
 
 export default function Footer() {
   return (
-    <Box bg={useColorModeValue("gray.50", "gray.900")} color={useColorModeValue("gray.700", "gray.200")}>
-      <Container as={Stack} maxW="6xl" py={10}>
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8}>
+    <Box
+      bg="linear-gradient(180deg, #0f0f0f, #1a1a1a)"
+      color="gray.300"
+      borderTop="1px solid #2d2d2d"
+    >
+      <Container as={Stack} maxW="7xl" py={12}>
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={10}>
           <Stack align="flex-start">
             <ListHeader>Company</ListHeader>
             <Link href="#">About Us</Link>
@@ -98,27 +81,28 @@ export default function Footer() {
             <ListHeader>Download App</ListHeader>
             <Stack direction="row" spacing={4}>
               <Link href="#appstore" aria-label="App Store">
-                <FaApple size={24} />
+                <FaApple size={24} color="teal.300" />
               </Link>
               <Link href="#playstore" aria-label="Google Play">
-                <FaGooglePlay size={24} />
+                <FaGooglePlay size={24} color="teal.300" />
               </Link>
             </Stack>
           </Stack>
         </SimpleGrid>
       </Container>
 
-      <Box borderTopWidth={1} borderStyle="solid" borderColor={useColorModeValue("gray.200", "gray.700")}>
+      <Box borderTopWidth={1} borderStyle="solid" borderColor="gray.700" py={6}>
         <Container
           as={Stack}
-          maxW="6xl"
-          py={4}
+          maxW="7xl"
           direction={{ base: "column", md: "row" }}
           spacing={4}
           justify={{ md: "space-between" }}
           align={{ md: "center" }}
         >
-          <Text>© 2023 Your Company. All Rights Reserved</Text>
+          <Text fontSize="sm" textAlign="center">
+            © 2023 Your Company. All rights reserved.
+          </Text>
           <Stack direction="row" spacing={6}>
             <SocialButton label="Twitter" href="#">
               <FaTwitter />
@@ -131,51 +115,6 @@ export default function Footer() {
             </SocialButton>
           </Stack>
         </Container>
-      </Box>
-
-      <Box py={10}>
-        <Text fontSize="xl" fontWeight="bold" textAlign="center" mb={4}>
-          What Our Clients Say
-        </Text>
-        <Swiper
-          spaceBetween={30}
-          slidesPerView={1}
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 5000 }}
-          modules={[Pagination, Autoplay]}
-          breakpoints={{
-            640: { slidesPerView: 1 },
-            768: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-          }}
-        >
-          {testimonials.map((testimonial, index) => (
-            <SwiperSlide key={index}>
-              <Box
-                p={5}
-                bg="gray.800"
-                borderRadius="lg"
-                shadow="lg"
-                textAlign="center"
-                maxW="sm"
-                mx="auto"
-              >
-                <Avatar
-                  src={testimonial.avatar}
-                  size="xl"
-                  mb={4}
-                  mx="auto"
-                  border="2px solid teal"
-                />
-                <Text fontSize="lg" mb={2}>"{testimonial.text}"</Text>
-                <Text fontWeight="bold">{testimonial.name}</Text>
-                <Text fontSize="sm" color="gray.400">
-                  {testimonial.role}
-                </Text>
-              </Box>
-            </SwiperSlide>
-          ))}
-        </Swiper>
       </Box>
     </Box>
   );

@@ -12,6 +12,7 @@ import {
   AlertIcon,
   InputGroup,
   InputRightElement,
+  Divider,
 } from "@chakra-ui/react";
 import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -87,22 +88,25 @@ const Login = () => {
     <MotionBox
       as="form"
       onSubmit={handleSubmit}
-      bgGradient="linear(to-r, blackAlpha.900, gray.800)"
+      bgGradient="linear(to-b, blackAlpha.900, gray.900)"
       color="whiteAlpha.900"
       borderRadius="lg"
       shadow="dark-lg"
       p={8}
-      maxW="lg"
+      maxW="md"
       mx="auto"
+      
       mt={10}
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
+      overflow="hidden"
     >
-      <Heading as="h2" size="xl" textAlign="center" mb={6}>
-        <FaUserCircle size="2em" style={{ marginBottom: "10px" }} />
+      <Heading as="h2" size="xl" textAlign="center" mb={4}>
+        <FaUserCircle size="2.5em" />
         Login
       </Heading>
+      <Divider mb={6} borderColor="gray.700" />
       <VStack spacing={5}>
         <FormControl isInvalid={errors.user_email}>
           <FormLabel>Email Address</FormLabel>
@@ -117,6 +121,7 @@ const Login = () => {
             focusBorderColor="cyan.500"
             border="1px"
             borderColor="gray.700"
+            _hover={{ borderColor: "cyan.500" }}
           />
           {errors.user_email && (
             <Alert status="error" mt={2} borderRadius="md">
@@ -140,6 +145,7 @@ const Login = () => {
               focusBorderColor="cyan.500"
               border="1px"
               borderColor="gray.700"
+              _hover={{ borderColor: "cyan.500" }}
             />
             <InputRightElement width="4.5rem">
               <Button

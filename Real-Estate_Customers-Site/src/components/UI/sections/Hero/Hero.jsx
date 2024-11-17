@@ -1,37 +1,35 @@
+import "./Hero.css";
+import { HiLocationMarker } from "react-icons/hi";
+import CountUp from "react-countup";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef } from "react";
 import heroimage from "../../../../assets/hero-image.png";
-import "./Hero.css";
 
 const Hero = () => {
   const controls = useAnimation();
   const ref = useRef(null);
-  const isMounted = useRef(false);
 
   useEffect(() => {
-    isMounted.current = true; // Set to true when the component is mounted
+    if (!ref.current) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      const [entry] = entries;
-      if (isMounted.current) { // Check if component is still mounted
+    const observer = new IntersectionObserver(
+      ([entry]) => {
         if (entry.isIntersecting) {
           controls.start("visible");
         } else {
           controls.start("hidden");
         }
+      },
+      {
+        root: null,
+        threshold: 0.3,
       }
-    }, {
-      root: null,
-      threshold: 0.3,
-    });
+    );
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+    observer.observe(ref.current);
 
     return () => {
-      isMounted.current = false; // Set to false when the component unmounts
-      if (ref.current) observer.unobserve(ref.current);
+      observer.disconnect(); 
     };
   }, [controls]);
 
@@ -60,15 +58,15 @@ const Hero = () => {
               animate={{ scale: 1 }}
               transition={{ duration: 1, type: "spring" }}
             />
-            <motion.h1 initial="hidden" animate={controls} variants={fadeIn}>
+            <motion.h1 variants={fadeIn}>
               Discover Your Dream <br />
               Living Space <br /> Property
             </motion.h1>
+            
           </div>
+
           <motion.div
             className="flexColStart secondaryText flexhero-des"
-            initial="hidden"
-            animate={controls}
             variants={fadeIn}
             transition={{ delay: 0.3, duration: 1 }}
           >
@@ -77,7 +75,29 @@ const Hero = () => {
               purchase.
             </span>
           </motion.div>
+
+          <div className="flexCenter stats">
+            {[
+              { start: 8800, end: 9879, label: "Premium Products" },
+              { start: 1950, end: 2500, label: "Happy Customers" },
+              { start: 0, end: 41, label: "Awards Won" },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                className="flexColCenter stat"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 200 }}
+              >
+                <span>
+                  <CountUp start={stat.start} end={stat.end} duration={3} />{" "}
+                  <span>+</span>
+                </span>
+                <span className="secondaryText">{stat.label}</span>
+              </motion.div>
+            ))}
+          </div>
         </div>
+
         <div className="flexCenter hero-right">
           <motion.div
             initial={{ x: "7rem", opacity: 0 }}
