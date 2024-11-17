@@ -33,7 +33,7 @@ const Pagination = ({ currentPage, productsPerPage, totalProducts, onPageChange 
 
   const buttonVariant = {
     hover: {
-      scale: 1.2,
+      scale: 1.15,
       background: "linear-gradient(145deg, #1e293b, #4b5563)",
       color: "#f8fafc",
       boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.7)",
@@ -57,9 +57,9 @@ const Pagination = ({ currentPage, productsPerPage, totalProducts, onPageChange 
 
   return (
     <motion.div initial="hidden" animate="visible" variants={containerVariant}>
-      <Box my={8} textAlign="center">
+      <Box my={8} textAlign="center" maxW="90%" mx="auto">
         <Text
-          fontSize="2xl"
+          fontSize={{ base: "lg", md: "2xl" }}
           mb={6}
           color="gray.200"
           fontWeight="extrabold"
@@ -69,7 +69,7 @@ const Pagination = ({ currentPage, productsPerPage, totalProducts, onPageChange 
         >
           Page {currentPage} of {totalPages}
         </Text>
-        <ButtonGroup spacing={4} isAttached>
+        <ButtonGroup spacing={{ base: 2, md: 4 }} isAttached flexWrap="wrap" justifyContent="center">
           <Tooltip label="First Page" aria-label="First Page">
             <motion.div whileHover="hover" whileTap="tap" variants={buttonVariant}>
               <IconButton
@@ -77,7 +77,7 @@ const Pagination = ({ currentPage, productsPerPage, totalProducts, onPageChange 
                 onClick={() => handleClick(1)}
                 isDisabled={currentPage === 1}
                 aria-label="First page"
-                size="lg"
+                size={{ base: "sm", md: "lg" }}
                 borderRadius="full"
                 bg="gray.800"
                 color="gray.300"
@@ -94,7 +94,7 @@ const Pagination = ({ currentPage, productsPerPage, totalProducts, onPageChange 
                 onClick={() => handleClick(currentPage - 1)}
                 isDisabled={currentPage === 1}
                 aria-label="Previous page"
-                size="lg"
+                size={{ base: "sm", md: "lg" }}
                 borderRadius="full"
                 bg="gray.800"
                 color="gray.300"
@@ -109,7 +109,7 @@ const Pagination = ({ currentPage, productsPerPage, totalProducts, onPageChange 
               <Button
                 onClick={() => handleClick(page)}
                 aria-current={currentPage === page ? "page" : undefined}
-                size="lg"
+                size={{ base: "sm", md: "lg" }}
                 borderRadius="full"
                 fontWeight="bold"
                 bg={currentPage === page ? "blue.700" : "gray.900"}
@@ -130,7 +130,7 @@ const Pagination = ({ currentPage, productsPerPage, totalProducts, onPageChange 
                 onClick={() => handleClick(currentPage + 1)}
                 isDisabled={currentPage === totalPages}
                 aria-label="Next page"
-                size="lg"
+                size={{ base: "sm", md: "lg" }}
                 borderRadius="full"
                 bg="gray.800"
                 color="gray.300"
@@ -147,7 +147,7 @@ const Pagination = ({ currentPage, productsPerPage, totalProducts, onPageChange 
                 onClick={() => handleClick(totalPages)}
                 isDisabled={currentPage === totalPages}
                 aria-label="Last page"
-                size="lg"
+                size={{ base: "sm", md: "lg" }}
                 borderRadius="full"
                 bg="gray.800"
                 color="gray.300"
