@@ -28,7 +28,8 @@ app.use(
     origin: [
       'http://localhost:5173', 
       'https://real-estate-mern-stack-production.up.railway.app',
-      'https://real-estate-mern-stack.vercel.app' 
+      'https://real-estate-mern-stack.vercel.app',
+      'https://real-estate-mern-stack-3rguxmph8-star-quest.vercel.app' 
     ],
     optionsSuccessStatus: 200,
   })
