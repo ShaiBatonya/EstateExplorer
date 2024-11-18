@@ -25,7 +25,11 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
     credentials: true,
-    origin: ['http://localhost:5173', 'https://real-estate-mern-stack-production.up.railway.app'],
+    origin: [
+      'http://localhost:5173', 
+      'https://real-estate-mern-stack-production.up.railway.app',
+      'https://real-estate-mern-stack.vercel.app' 
+    ],
     optionsSuccessStatus: 200,
   })
 );
