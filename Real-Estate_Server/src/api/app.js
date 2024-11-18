@@ -25,10 +25,11 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
     credentials: true,
-    origin: "*",
+    origin: ['http://localhost:5173', 'https://real-estate-mern-stack-production.up.railway.app'],
     optionsSuccessStatus: 200,
   })
 );
+
 
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
