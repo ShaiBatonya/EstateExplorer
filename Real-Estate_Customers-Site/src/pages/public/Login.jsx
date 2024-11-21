@@ -7,55 +7,52 @@ import {
   Button,
   Text,
   VStack,
-  useToast,
-  Alert,
-  AlertIcon,
   InputGroup,
   InputRightElement,
+  Alert,
+  AlertIcon,
+  useToast,
   Divider,
 } from "@chakra-ui/react";
 import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { Navigate, useNavigate, Link } from "react-router-dom";
-import { z } from "zod";
-import { motion } from "framer-motion";
+import { useNavigate, Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
 
 const MotionBox = motion(Box);
 
-const loginSchema = z.object({
-  user_email: z.string().email("Invalid email format"),
-  user_password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
 const Login = () => {
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { user, login } = useContext(AuthContext);
-  const [values, setValues] = useState({
-    user_email: "",
-    user_password: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const toast = useToast();
+  const [values, setValues] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setValues({ ...values, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const parsedData = loginSchema.parse(values);
+      loginSchema.parse(values);
       setErrors({});
       setLoading(true);
-      const response = await login(parsedData.user_email, parsedData.user_password);
+      await login(values.email, values.password);
       toast({
-        title: "Login Successful",
-        description: response.message,
+        title: "Welcome Back!",
+        description: "You have successfully logged in.",
         status: "success",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
       navigate("/");
@@ -69,9 +66,9 @@ const Login = () => {
       } else {
         toast({
           title: "Login Failed",
-          description: "Please check your credentials and try again.",
+          description: "Invalid credentials, please try again.",
           status: "error",
-          duration: 5000,
+          duration: 3000,
           isClosable: true,
         });
       }
@@ -80,114 +77,110 @@ const Login = () => {
     }
   };
 
-  if (user) {
-    return <Navigate to="/" />;
-  }
-
   return (
-    <MotionBox
-      as="form"
-      onSubmit={handleSubmit}
-      bgGradient="linear(to-b, blackAlpha.900, gray.900)"
+    <Box
+      bgGradient="linear(to-r, blackAlpha.900, gray.800)"
+      minH="100vh"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
       color="whiteAlpha.900"
-      borderRadius="lg"
-      shadow="dark-lg"
-      p={8}
-      maxW="md"
-      mx="auto"
-      
-      mt={10}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      overflow="hidden"
     >
-      <Heading as="h2" size="xl" textAlign="center" mb={4}>
-        <FaUserCircle size="2.5em" />
-        Login
-      </Heading>
-      <Divider mb={6} borderColor="gray.700" />
-      <VStack spacing={5}>
-        <FormControl isInvalid={errors.user_email}>
-          <FormLabel>Email Address</FormLabel>
-          <Input
-            type="email"
-            name="user_email"
-            value={values.user_email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-            bg="blackAlpha.600"
-            _placeholder={{ color: "gray.500" }}
-            focusBorderColor="cyan.500"
-            border="1px"
-            borderColor="gray.700"
-            _hover={{ borderColor: "cyan.500" }}
-          />
-          {errors.user_email && (
-            <Alert status="error" mt={2} borderRadius="md">
-              <AlertIcon />
-              {errors.user_email}
-            </Alert>
-          )}
-        </FormControl>
-
-        <FormControl isInvalid={errors.user_password}>
-          <FormLabel>Password</FormLabel>
-          <InputGroup>
+      <MotionBox
+        as="form"
+        onSubmit={handleSubmit}
+        bg="blackAlpha.800"
+        borderRadius="2xl"
+        p={{ base: 8, md: 16 }}
+        w={{ base: "90%", md: "40%" }}
+        boxShadow="2xl"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <Heading textAlign="center" fontSize={{ base: "2xl", md: "3xl" }}>
+          <FaUserCircle size="3rem" />
+          Login to Your Account
+        </Heading>
+        <Divider my={6} />
+        <VStack spacing={5}>
+          <FormControl isInvalid={errors.email}>
+            <FormLabel>Email</FormLabel>
             <Input
-              type={showPassword ? "text" : "password"}
-              name="user_password"
-              value={values.user_password}
+              name="email"
+              type="email"
+              placeholder="Enter your email"
+              value={values.email}
               onChange={handleChange}
-              placeholder="Enter your password"
               bg="blackAlpha.600"
-              _placeholder={{ color: "gray.500" }}
-              focusBorderColor="cyan.500"
-              border="1px"
+              _placeholder={{ color: "gray.400" }}
               borderColor="gray.700"
-              _hover={{ borderColor: "cyan.500" }}
+              focusBorderColor="cyan.500"
             />
-            <InputRightElement width="4.5rem">
-              <Button
-                h="1.75rem"
-                size="sm"
-                bg="cyan.500"
-                color="white"
-                _hover={{ bg: "cyan.600" }}
-                onClick={() => setShowPassword((prev) => !prev)}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-          {errors.user_password && (
-            <Alert status="error" mt={2} borderRadius="md">
-              <AlertIcon />
-              {errors.user_password}
-            </Alert>
-          )}
-        </FormControl>
+            {errors.email && (
+              <Alert status="error" mt={2} borderRadius="md">
+                <AlertIcon />
+                {errors.email}
+              </Alert>
+            )}
+          </FormControl>
 
-        <Button
-          type="submit"
-          colorScheme="cyan"
-          size="lg"
-          isLoading={loading}
-          loadingText="Logging in"
-          w="full"
-          _hover={{ bg: "cyan.600", boxShadow: "0 0 20px cyan" }}
-        >
-          Login
-        </Button>
+          <FormControl isInvalid={errors.password}>
+            <FormLabel>Password</FormLabel>
+            <InputGroup>
+              <Input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={values.password}
+                onChange={handleChange}
+                bg="blackAlpha.600"
+                _placeholder={{ color: "gray.400" }}
+                borderColor="gray.700"
+                focusBorderColor="cyan.500"
+              />
+              <InputRightElement>
+                <Button
+                  size="sm"
+                  bg="cyan.500"
+                  color="white"
+                  _hover={{ bg: "cyan.600" }}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+            {errors.password && (
+              <Alert status="error" mt={2} borderRadius="md">
+                <AlertIcon />
+                {errors.password}
+              </Alert>
+            )}
+          </FormControl>
 
-        <Text>
-          Don't have an account?{" "}
+          <Button
+            type="submit"
+            isLoading={loading}
+            loadingText="Logging in"
+            colorScheme="cyan"
+            w="full"
+            size="lg"
+            boxShadow="0px 0px 20px cyan"
+            _hover={{ boxShadow: "0px 0px 40px cyan" }}
+          >
+            Login
+          </Button>
+        </VStack>
+
+        <Text textAlign="center" mt={6}>
+          Don’t have an account?{" "}
           <Link to="/register" style={{ color: "cyan.400", fontWeight: "bold" }}>
             Register
           </Link>
         </Text>
-      </VStack>
-    </MotionBox>
+      </MotionBox>
+    </Box>
   );
 };
 

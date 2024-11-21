@@ -7,20 +7,19 @@ import {
   Button,
   Text,
   VStack,
-  useToast,
-  Alert,
-  AlertIcon,
   InputGroup,
   InputRightElement,
+  Alert,
+  AlertIcon,
+  useToast,
+  Divider,
 } from "@chakra-ui/react";
 import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { z } from "zod";
-import { motion } from "framer-motion";
 import { FaUserPlus } from "react-icons/fa";
-
-const MotionBox = motion(Box);
+import { motion } from "framer-motion";
+import { z } from "zod";
 
 const registerSchema = z
   .object({
@@ -33,6 +32,8 @@ const registerSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
+
+const MotionBox = motion(Box);
 
 const Register = () => {
   const { register } = useContext(AuthContext);
@@ -61,9 +62,9 @@ const Register = () => {
       await register(values);
       toast({
         title: "Registration Successful",
-        description: "Welcome! You can now login.",
+        description: "You can now log in to your account.",
         status: "success",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
       navigate("/login");
@@ -77,9 +78,9 @@ const Register = () => {
       } else {
         toast({
           title: "Registration Failed",
-          description: error.message || "Please try again.",
+          description: "An unexpected error occurred.",
           status: "error",
-          duration: 5000,
+          duration: 3000,
           isClosable: true,
         });
       }
@@ -89,148 +90,152 @@ const Register = () => {
   };
 
   return (
-    <MotionBox
-      as="form"
-      onSubmit={handleSubmit}
-      bgGradient="linear(to-r, blackAlpha.900, gray.800)"
+    <Box
+      bgGradient="linear(to-l, blackAlpha.900, gray.800)"
+      minH="100vh"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
       color="whiteAlpha.900"
-      borderRadius="lg"
-      shadow="dark-lg"
-      p={8}
-      maxW="lg"
-      mx="auto"
-      mt={10}
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
     >
-      <Heading as="h2" size="xl" textAlign="center" mb={6}>
-        <FaUserPlus size="2em" style={{ marginBottom: "10px" }} />
-        Register
-      </Heading>
-      <VStack spacing={5}>
-        <FormControl isInvalid={errors.name}>
-          <FormLabel>Name</FormLabel>
-          <Input
-            type="text"
-            name="name"
-            placeholder="Enter your name"
-            value={values.name}
-            onChange={handleChange}
-            bg="blackAlpha.600"
-            _placeholder={{ color: "gray.500" }}
-            focusBorderColor="cyan.500"
-            border="1px"
-            borderColor="gray.700"
-          />
-          {errors.name && (
-            <Alert status="error" mt={2} borderRadius="md">
-              <AlertIcon />
-              {errors.name}
-            </Alert>
-          )}
-        </FormControl>
+      <MotionBox
+        as="form"
+        onSubmit={handleSubmit}
+        bg="blackAlpha.800"
+        borderRadius="2xl"
+        p={{ base: 8, md: 16 }}
+        w={{ base: "90%", md: "50%" }}
+        boxShadow="2xl"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <Heading textAlign="center" fontSize={{ base: "2xl", md: "3xl" }}>
+          <FaUserPlus size="3rem" />
+          Register for an Account
+        </Heading>
+        <Divider my={6} />
 
-        <FormControl isInvalid={errors.email}>
-          <FormLabel>Email</FormLabel>
-          <Input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={values.email}
-            onChange={handleChange}
-            bg="blackAlpha.600"
-            _placeholder={{ color: "gray.500" }}
-            focusBorderColor="cyan.500"
-            border="1px"
-            borderColor="gray.700"
-          />
-          {errors.email && (
-            <Alert status="error" mt={2} borderRadius="md">
-              <AlertIcon />
-              {errors.email}
-            </Alert>
-          )}
-        </FormControl>
-
-        <FormControl isInvalid={errors.password}>
-          <FormLabel>Password</FormLabel>
-          <InputGroup>
+        <VStack spacing={5}>
+          <FormControl isInvalid={errors.name}>
+            <FormLabel>Name</FormLabel>
             <Input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Enter your password"
-              value={values.password}
+              name="name"
+              type="text"
+              placeholder="Enter your name"
+              value={values.name}
               onChange={handleChange}
               bg="blackAlpha.600"
-              _placeholder={{ color: "gray.500" }}
-              focusBorderColor="cyan.500"
-              border="1px"
+              _placeholder={{ color: "gray.400" }}
               borderColor="gray.700"
+              focusBorderColor="cyan.500"
             />
-            <InputRightElement width="4.5rem">
-              <Button
-                h="1.75rem"
-                size="sm"
-                bg="cyan.500"
-                color="white"
-                _hover={{ bg: "cyan.600" }}
-                onClick={() => setShowPassword((prev) => !prev)}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-          {errors.password && (
-            <Alert status="error" mt={2} borderRadius="md">
-              <AlertIcon />
-              {errors.password}
-            </Alert>
-          )}
-        </FormControl>
+            {errors.name && (
+              <Alert status="error" mt={2} borderRadius="md">
+                <AlertIcon />
+                {errors.name}
+              </Alert>
+            )}
+          </FormControl>
 
-        <FormControl isInvalid={errors.confirmPassword}>
-          <FormLabel>Confirm Password</FormLabel>
-          <Input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm your password"
-            value={values.confirmPassword}
-            onChange={handleChange}
-            bg="blackAlpha.600"
-            _placeholder={{ color: "gray.500" }}
-            focusBorderColor="cyan.500"
-            border="1px"
-            borderColor="gray.700"
-          />
-          {errors.confirmPassword && (
-            <Alert status="error" mt={2} borderRadius="md">
-              <AlertIcon />
-              {errors.confirmPassword}
-            </Alert>
-          )}
-        </FormControl>
+          <FormControl isInvalid={errors.email}>
+            <FormLabel>Email</FormLabel>
+            <Input
+              name="email"
+              type="email"
+              placeholder="Enter your email"
+              value={values.email}
+              onChange={handleChange}
+              bg="blackAlpha.600"
+              _placeholder={{ color: "gray.400" }}
+              borderColor="gray.700"
+              focusBorderColor="cyan.500"
+            />
+            {errors.email && (
+              <Alert status="error" mt={2} borderRadius="md">
+                <AlertIcon />
+                {errors.email}
+              </Alert>
+            )}
+          </FormControl>
 
-        <Button
-          type="submit"
-          colorScheme="cyan"
-          size="lg"
-          isLoading={loading}
-          loadingText="Registering"
-          w="full"
-          _hover={{ bg: "cyan.600", boxShadow: "0 0 20px cyan" }}
-        >
-          Register
-        </Button>
-      </VStack>
+          <FormControl isInvalid={errors.password}>
+            <FormLabel>Password</FormLabel>
+            <InputGroup>
+              <Input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={values.password}
+                onChange={handleChange}
+                bg="blackAlpha.600"
+                _placeholder={{ color: "gray.400" }}
+                borderColor="gray.700"
+                focusBorderColor="cyan.500"
+              />
+              <InputRightElement>
+                <Button
+                  size="sm"
+                  bg="cyan.500"
+                  color="white"
+                  _hover={{ bg: "cyan.600" }}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+            {errors.password && (
+              <Alert status="error" mt={2} borderRadius="md">
+                <AlertIcon />
+                {errors.password}
+              </Alert>
+            )}
+          </FormControl>
 
-      <Text mt={4} textAlign="center">
-        Already have an account?{" "}
-        <Link to="/login" style={{ color: "cyan.400", fontWeight: "bold" }}>
-          Login
-        </Link>
-      </Text>
-    </MotionBox>
+          <FormControl isInvalid={errors.confirmPassword}>
+            <FormLabel>Confirm Password</FormLabel>
+            <Input
+              name="confirmPassword"
+              type="password"
+              placeholder="Confirm your password"
+              value={values.confirmPassword}
+              onChange={handleChange}
+              bg="blackAlpha.600"
+              _placeholder={{ color: "gray.400" }}
+              borderColor="gray.700"
+              focusBorderColor="cyan.500"
+            />
+            {errors.confirmPassword && (
+              <Alert status="error" mt={2} borderRadius="md">
+                <AlertIcon />
+                {errors.confirmPassword}
+              </Alert>
+            )}
+          </FormControl>
+
+          <Button
+            type="submit"
+            isLoading={loading}
+            loadingText="Registering"
+            colorScheme="cyan"
+            w="full"
+            size="lg"
+            boxShadow="0px 0px 20px cyan"
+            _hover={{ boxShadow: "0px 0px 40px cyan" }}
+          >
+            Register
+          </Button>
+        </VStack>
+
+        <Text textAlign="center" mt={6}>
+          Already have an account?{" "}
+          <Link to="/login" style={{ color: "cyan.400", fontWeight: "bold" }}>
+            Login
+          </Link>
+        </Text>
+      </MotionBox>
+    </Box>
   );
 };
 

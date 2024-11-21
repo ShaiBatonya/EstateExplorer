@@ -1,47 +1,44 @@
-.gradient-background {
-    background: linear-gradient(135deg, #89f7fe, #66a6ff, #ff758c, #ff7eb3);
-    background-size: 300% 300%;
-    animation: gradientAnimation 15s ease infinite;
-  }
+.nav-container {
+  background-color: rgba(33, 33, 33, 0.5);
+  backdrop-filter: blur(10px);
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
   
-  @keyframes gradientAnimation {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  
-  .nav-button {
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    border-radius: 30px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-  }
-  
-  .nav-button:hover {
-    transform: scale(1.1);
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(135deg, #43e97b, #38f9d7);
-  }
-  
-  .mobile-nav {
-    transition: all 0.4s ease-in-out;
-  }
-  
-  .mobile-nav-open {
-    max-height: 500px;
-  }
-  
-  .mobile-nav-closed {
-    max-height: 0;
-    overflow: hidden;
-  }
-  
-  .navbar {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
+}
+
+.nav-container.scrolled {
+  background-color: rgba(33, 33, 33, 0.9);
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+}
+
+nav a {
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  transition: background 0.3s ease;
+}
+
+nav a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #f9a826;
+}
+
+nav .button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 30px;
+  font-weight: bold;
+}
+
+nav .button:hover {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+}

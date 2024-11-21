@@ -1,12 +1,14 @@
+// src/components/LoadingSpinner.jsx
+
+import React from "react";
 import { Spinner, Center, Text, VStack } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
-// Motion component for smooth fade-in
 const MotionVStack = motion(VStack);
 
 const LoadingSpinner = () => {
   return (
-    <Center h="100vh" bgGradient="linear(to-br, black, gray.800)" p={6}>
+    <Center h="100vh" bg="black" p={6}>
       <MotionVStack
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -17,20 +19,20 @@ const LoadingSpinner = () => {
           thickness="5px"
           speed="0.75s"
           emptyColor="gray.600"
-          color="teal.300"
+          color="gold.500"
           size="xl"
         />
         <Text
           fontSize="lg"
           fontWeight="bold"
-          color="teal.300"
+          color="gold.500"
           textAlign="center"
         >
-          Loading your dream properties...
+          Loading your exclusive experience...
         </Text>
       </MotionVStack>
     </Center>
   );
 };
 
-export default LoadingSpinner;
+export default React.memo(LoadingSpinner);

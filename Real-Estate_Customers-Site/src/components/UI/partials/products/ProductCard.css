@@ -1,4 +1,5 @@
-/* Global Product Card Enhancements */
+/* ProductCard.css */
+
 .product-card {
   transition: all 0.5s ease-in-out;
   background: linear-gradient(135deg, #1e2a38, #2d3748);

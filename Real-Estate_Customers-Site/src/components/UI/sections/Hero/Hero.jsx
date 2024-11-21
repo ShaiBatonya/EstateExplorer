@@ -1,117 +1,132 @@
-import "./Hero.css";
-import { HiLocationMarker } from "react-icons/hi";
-import CountUp from "react-countup";
-import { motion, useAnimation } from "framer-motion";
-import { useEffect, useRef } from "react";
-import heroimage from "../../../../assets/hero-image.png";
+// src/components/UI/sections/Hero/Hero.jsx
+
+import React, { useEffect, useRef } from 'react';
+import { motion, useAnimation } from 'framer-motion';
+import CountUp from 'react-countup';
+import './Hero.css';
+import { Link } from 'react-router-dom';
+import heroImage from '../../../../assets/hero-image.png'; // Ensure this is a high-resolution image
 
 const Hero = () => {
+  // Animation controls
   const controls = useAnimation();
   const ref = useRef(null);
 
   useEffect(() => {
     if (!ref.current) return;
 
+    // Intersection Observer to trigger animations when the component is in view
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          controls.start("visible");
-        } else {
-          controls.start("hidden");
+          controls.start('visible');
         }
       },
       {
         root: null,
-        threshold: 0.3,
+        threshold: 0.1,
       }
     );
 
     observer.observe(ref.current);
 
     return () => {
-      observer.disconnect(); 
+      observer.disconnect();
     };
   }, [controls]);
 
-  const fadeIn = {
-    hidden: { opacity: 0, y: 50 },
+  // Animation variants
+  const fadeInLeft = {
+    hidden: { opacity: 0, x: -60 },
     visible: {
       opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: "easeOut" },
+      x: 0,
+      transition: { duration: 1.2, ease: 'easeOut' },
+    },
+  };
+
+  const fadeInRight = {
+    hidden: { opacity: 0, x: 60 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 1.2, ease: 'easeOut' },
+    },
+  };
+
+  const staggerContainer = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.3,
+        delayChildren: 0.3,
+      },
     },
   };
 
   return (
-    <section className="hero-wrapper" ref={ref}>
+    <section className="hero-section" ref={ref}>
       <motion.div
         initial="hidden"
         animate={controls}
-        variants={fadeIn}
-        className="paddings innerWidth flexCenter hero-container"
+        variants={staggerContainer}
+        className="hero-container"
       >
-        <div className="flexColStart hero-left">
-          <div className="hero-title">
-            <motion.div
-              className="orange-circle"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 1, type: "spring" }}
-            />
-            <motion.h1 variants={fadeIn}>
-              Discover Your Dream <br />
-              Living Space <br /> Property
-            </motion.h1>
-            
+        {/* Text Content - Left Side */}
+        <motion.div className="hero-content" variants={fadeInLeft}>
+          {/* Title */}
+          <h1 className="hero-title">
+            Discover the <span>Peak of Luxury</span>
+          </h1>
+
+          {/* Subtitle */}
+          <h2 className="hero-subtitle">
+            Find Your Perfect Dream Home
+          </h2>
+
+          {/* Description */}
+          <p className="hero-description">
+            Open the door to a world of luxury properties. Our exclusive collection offers unparalleled elegance and comfort.
+          </p>
+
+          {/* Call to Action Buttons */}
+          <div className="cta-buttons">
+            <Link to="/properties" className="button primary-button">
+              View Properties
+            </Link>
+            <Link to="/contact" className="button secondary-button">
+              Contact Us
+            </Link>
           </div>
 
-          <motion.div
-            className="flexColStart secondaryText flexhero-des"
-            variants={fadeIn}
-            transition={{ delay: 0.3, duration: 1 }}
-          >
-            <span>
-              Welcome to our exclusive real estate properties available for
-              purchase.
-            </span>
-          </motion.div>
-
-          <div className="flexCenter stats">
+          {/* Statistics */}
+          <div className="stats">
             {[
-              { start: 8800, end: 9879, label: "Premium Products" },
-              { start: 1950, end: 2500, label: "Happy Customers" },
-              { start: 0, end: 41, label: "Awards Won" },
+              { end: 20000, label: 'Luxury Properties' },
+              { end: 10000, label: 'Satisfied Clients' },
+              { end: 150, label: 'International Awards' },
             ].map((stat, i) => (
-              <motion.div
-                key={i}
-                className="flexColCenter stat"
-                whileHover={{ scale: 1.1 }}
-                transition={{ type: "spring", stiffness: 200 }}
-              >
-                <span>
-                  <CountUp start={stat.start} end={stat.end} duration={3} />{" "}
-                  <span>+</span>
-                </span>
-                <span className="secondaryText">{stat.label}</span>
-              </motion.div>
+              <div key={i} className="stat">
+                <CountUp start={0} end={stat.end} duration={3} delay={0.5} />
+                <span className="plus-sign">+</span>
+                <p>{stat.label}</p>
+              </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="flexCenter hero-right">
-          <motion.div
-            initial={{ x: "7rem", opacity: 0 }}
-            animate={controls}
-            variants={fadeIn}
-            transition={{ duration: 1.2, type: "spring" }}
-            className="image-container"
-          >
-            <img src={heroimage} alt="houses" />
-          </motion.div>
-        </div>
+        {/* Image - Right Side */}
+        <motion.div
+          className="hero-image-container"
+          variants={fadeInRight}
+        >
+          <img src={heroImage} alt="Luxury Property" className="hero-image" loading="lazy" />
+          {/* Decorative Overlay */}
+          <div className="image-overlay"></div>
+        </motion.div>
       </motion.div>
     </section>
   );
 };
 
-export default Hero;
+export default React.memo(Hero);

@@ -1,45 +1,26 @@
+// src/components/AppointmentForm.jsx
+
 import React, { useState } from "react";
-import styled from "styled-components";
+import {
+  Box,
+  Button,
+  Container,
+  FormControl,
+  FormLabel,
+  Input,
+  useToast,
+  Heading,
+  Text,
+  VStack,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { Box, Button, Container, FormControl, FormLabel, Input, useColorModeValue, useToast, Heading, Text } from "@chakra-ui/react";
-import { motion } from "framer-motion";
+import "leaflet/dist/leaflet.css";
 
-// Styled container and button
-const AppointmentFormContainer = styled(Container)`
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  margin-top: 40px;
-  background-color: ${(props) => props.bgColor};
-  transition: all 0.3s ease;
-`;
-
-const StyledDatePicker = styled(DatePicker)`
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-`;
-
-const SubmitButton = styled(Button)`
-  width: 100%;
-  padding: 14px;
-  font-size: 1.2rem;
-  background-color: #3498db;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  transition: background-color 0.3s, transform 0.2s ease;
-
-  &:hover {
-    background-color: #2980b9;
-    transform: translateY(-2px);
-  }
-`;
+const MotionContainer = motion(Container);
 
 const AppointmentForm = () => {
   const [formData, setFormData] = useState({
@@ -53,18 +34,12 @@ const AppointmentForm = () => {
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
   // Handle date change for date picker
   const handleDateChange = (date) => {
-    setFormData({
-      ...formData,
-      preferredDate: date,
-    });
+    setFormData({ ...formData, preferredDate: date });
   };
 
   // Form validation
@@ -73,7 +48,7 @@ const AppointmentForm = () => {
     if (!name || !email || !phoneNumber || !preferredDate) {
       toast({
         title: "Validation Error",
-        description: "Please fill in all fields before submitting",
+        description: "Please fill in all fields before submitting.",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -95,99 +70,149 @@ const AppointmentForm = () => {
         duration: 3000,
         isClosable: true,
       });
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        preferredDate: null,
+      });
     }
   };
 
+  // Styles
+  const bgColor = useColorModeValue("#0D0D2B", "#0D0D2B"); // Deep blue background
+  const textColor = useColorModeValue("#FFFFFF", "#FFFFFF"); // White text
+  const inputBg = useColorModeValue("#1F1F3D", "#1F1F3D"); // Slightly lighter blue for inputs
+  const borderColor = useColorModeValue("#3E3E6B", "#3E3E6B"); // Silver border
+  const headingColor = useColorModeValue("#A6A6C1", "#A6A6C1"); // Light silver for headings
+
   return (
-    <motion.div
+    <MotionContainer
+      maxW="container.md"
+      mt={10}
+      p={8}
+      borderRadius="lg"
+      bg={bgColor}
+      color={textColor}
+      boxShadow="2xl"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <AppointmentFormContainer maxW="container.md" bgColor={useColorModeValue("#ffffff", "#1a202c")}>
-        <form onSubmit={handleSubmit}>
-          <FormControl mb={4}>
-            <FormLabel color={useColorModeValue("gray.700", "gray.300")}>Name</FormLabel>
+      <form onSubmit={handleSubmit}>
+        <Heading as="h2" size="xl" mb={6} textAlign="center" color={headingColor}>
+          Schedule an Appointment
+        </Heading>
+        <VStack spacing={5}>
+          <FormControl>
+            <FormLabel>Name</FormLabel>
             <Input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
               placeholder="Enter your name"
-              focusBorderColor="teal.500"
-              borderRadius="8px"
-              bg={useColorModeValue("white", "gray.700")}
-              color={useColorModeValue("black", "white")}
+              bg={inputBg}
+              borderColor={borderColor}
+              _placeholder={{ color: "gray.400" }}
+              focusBorderColor="#5D5D79"
+              _focus={{ boxShadow: "0 0 0 1px #5D5D79" }}
             />
           </FormControl>
 
-          <FormControl mb={4}>
-            <FormLabel color={useColorModeValue("gray.700", "gray.300")}>Email</FormLabel>
+          <FormControl>
+            <FormLabel>Email</FormLabel>
             <Input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
               placeholder="Enter your email"
-              focusBorderColor="teal.500"
-              borderRadius="8px"
-              bg={useColorModeValue("white", "gray.700")}
-              color={useColorModeValue("black", "white")}
+              bg={inputBg}
+              borderColor={borderColor}
+              _placeholder={{ color: "gray.400" }}
+              focusBorderColor="#5D5D79"
+              _focus={{ boxShadow: "0 0 0 1px #5D5D79" }}
             />
           </FormControl>
 
-          <FormControl mb={4}>
-            <FormLabel color={useColorModeValue("gray.700", "gray.300")}>Phone Number</FormLabel>
+          <FormControl>
+            <FormLabel>Phone Number</FormLabel>
             <Input
               type="tel"
               name="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleInputChange}
               placeholder="Enter your phone number"
-              focusBorderColor="teal.500"
-              borderRadius="8px"
-              bg={useColorModeValue("white", "gray.700")}
-              color={useColorModeValue("black", "white")}
+              bg={inputBg}
+              borderColor={borderColor}
+              _placeholder={{ color: "gray.400" }}
+              focusBorderColor="#5D5D79"
+              _focus={{ boxShadow: "0 0 0 1px #5D5D79" }}
             />
           </FormControl>
 
-          <FormControl mb={4}>
-            <FormLabel color={useColorModeValue("gray.700", "gray.300")}>Preferred Date</FormLabel>
-            <StyledDatePicker
-              selected={formData.preferredDate}
-              onChange={handleDateChange}
-              placeholderText="Select a date"
-              dateFormat="MMMM d, yyyy"
-            />
+          <FormControl>
+            <FormLabel>Preferred Date</FormLabel>
+            <Box
+              bg={inputBg}
+              border="1px solid"
+              borderColor={borderColor}
+              borderRadius="md"
+              p={2}
+              w="100%"
+            >
+              <DatePicker
+                selected={formData.preferredDate}
+                onChange={handleDateChange}
+                placeholderText="Select a date"
+                dateFormat="MMMM d, yyyy"
+                className="datepicker-input"
+              />
+            </Box>
           </FormControl>
 
-          <SubmitButton type="submit">Schedule Appointment</SubmitButton>
-        </form>
-      </AppointmentFormContainer>
+          <Button
+            type="submit"
+            size="lg"
+            bg="#3E3E6B"
+            color="white"
+            _hover={{ bg: "#5D5D79" }}
+            w="full"
+            boxShadow="lg"
+          >
+            Schedule Appointment
+          </Button>
+        </VStack>
+      </form>
 
       {/* Leaflet Map Integration */}
-      <Box mt={10} p={4} bg={useColorModeValue("gray.100", "gray.700")} borderRadius="8px">
-        <Heading size="md" mb={4} color={useColorModeValue("gray.700", "white")}>Your Location</Heading>
-        <Box height="300px" borderRadius="8px">
+      <Box mt={16} borderRadius="lg" overflow="hidden">
+        <Heading as="h3" size="lg" mb={6} color={headingColor}>
+          Our Location
+        </Heading>
+        <Box h="400px" w="100%" borderRadius="lg" overflow="hidden">
           <MapContainer
-            center={[51.505, -0.09]} // Default location (London)
+            center={[51.505, -0.09]}
             zoom={13}
+            style={{ height: "100%", width: "100%" }}
             scrollWheelZoom={false}
-            style={{ height: "100%", borderRadius: "8px" }}
           >
             <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+              url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
             />
             <Marker position={[51.505, -0.09]}>
               <Popup>
-                Your selected location. You can customize this with dynamic data.
+                <Text fontWeight="bold">Our Office Location</Text>
+                <Text>You're welcome to visit us!</Text>
               </Popup>
             </Marker>
           </MapContainer>
         </Box>
       </Box>
-    </motion.div>
+    </MotionContainer>
   );
 };
 

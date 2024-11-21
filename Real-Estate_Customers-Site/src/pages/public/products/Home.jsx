@@ -1,4 +1,6 @@
-import {
+// src/pages/Home/Home.jsx
+
+import React, {
   useContext,
   useEffect,
   useState,
@@ -6,256 +8,470 @@ import {
   useCallback,
   lazy,
   Suspense,
-} from "react";
-import { Helmet } from "react-helmet";
+} from 'react';
+import { Helmet } from 'react-helmet';
 import {
   Box,
   Heading,
   Flex,
   Wrap,
   WrapItem,
-  Button,
   Input,
   InputGroup,
-  InputRightElement,
+  InputLeftElement,
+  Select,
   Grid,
   GridItem,
-  IconButton,
+  Text,
+  VStack,
+  Skeleton,
   Spinner,
-} from "@chakra-ui/react";
-import { BsSearchHeart } from "react-icons/bs";
-import { motion } from "framer-motion";
-import debounce from "lodash/debounce";
-import axiosInstance from "../../../config/axiosConfig";
-import { AuthContext } from "../../../context/AuthContext";
+  useColorModeValue,
+  Button,
+  IconButton,
+} from '@chakra-ui/react';
+import { BsSearch } from 'react-icons/bs';
+import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import axiosInstance from '../../../config/axiosConfig';
+import { AuthContext } from '../../../context/AuthContext';
 
-const Hero = lazy(() => import("../../../components/UI/sections/Hero/Hero"));
-const Companies = lazy(() => import("../../../components/UI/sections/Companies/Companies"));
-const Value = lazy(() => import("../../../components/UI/sections/Value/Value"));
-const ProductCard = lazy(() => import("../../../components/UI/partials/products/ProductCard"));
-const LoadingSpinner = lazy(() => import("../../../components/UI/partials/products/LoadingSpinner"));
-const Pagination = lazy(() => import("./Pagination"));
+// Lazy-loaded components for code splitting and performance
+const Hero = lazy(() => import('../../../components/UI/sections/Hero/Hero'));
+const Companies = lazy(() =>
+  import('../../../components/UI/sections/Companies/Companies')
+);
+const Value = lazy(() => import('../../../components/UI/sections/Value/Value'));
+const ProductCard = lazy(() =>
+  import('../../../components/UI/partials/products/ProductCard')
+);
+const Pagination = lazy(() => import('./Pagination'));
+
 const MotionBox = motion(Box);
+const MotionButton = motion(Button);
+const MotionGridItem = motion(GridItem);
 
 const Home = () => {
   const { user } = useContext(AuthContext);
-  const [categories, setCategories] = useState([]);
-  const [productsInit, setProductsInit] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [priceRange, setPriceRange] = useState([0, 10000000]);
+  const [sortOption, setSortOption] = useState('default');
   const productsPerPage = 8;
 
+  // Debounced search term to optimize performance
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const { data } = await axiosInstance.get("/categories/customers/all");
-        setCategories(data.categories || []);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
-    fetchCategories();
-  }, []);
+  // Fetch categories using React Query for efficient data management
+  const {
+    data: categories = [],
+    isLoading: isCategoriesLoading,
+  } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get('/categories/customers/all');
+      return data.categories || [];
+    },
+  });
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const { data } = await axiosInstance.get("/products/customers/all");
-        setProductsInit(data.products || []);
-        setFilteredProducts(data.products || []);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+  // Fetch products using React Query
+  const {
+    data: productsInit = [],
+    isLoading: isProductsLoading,
+  } = useQuery({
+    queryKey: ['products'],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get('/products/customers/all');
+      return data.products || [];
+    },
+  });
 
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
+  // Memoized filtered products to prevent unnecessary computations
+  const filteredProducts = useMemo(() => {
     let results = [...productsInit];
+
+    // Filter by category
     if (filterStatus) {
       results = results.filter((product) =>
         product.categories.some((cat) => cat.category === filterStatus)
       );
     }
-    if (searchTerm) {
+
+    // Filter by search term
+    if (debouncedSearchTerm) {
+      const lowerCaseSearchTerm = debouncedSearchTerm.toLowerCase();
       results = results.filter(
         (product) =>
-          product.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.product_description.toLowerCase().includes(searchTerm.toLowerCase())
+          product.product_name.toLowerCase().includes(lowerCaseSearchTerm) ||
+          product.product_description.toLowerCase().includes(lowerCaseSearchTerm)
       );
     }
-    setFilteredProducts(results);
-  }, [filterStatus, searchTerm, productsInit]);
 
+    // Filter by price range
+    results = results.filter(
+      (product) =>
+        product.product_price >= priceRange[0] &&
+        product.product_price <= priceRange[1]
+    );
+
+    // Sort products
+    switch (sortOption) {
+      case 'priceLowHigh':
+        results.sort((a, b) => a.product_price - b.product_price);
+        break;
+      case 'priceHighLow':
+        results.sort((a, b) => b.product_price - a.product_price);
+        break;
+      case 'nameAZ':
+        results.sort((a, b) => a.product_name.localeCompare(b.product_name));
+        break;
+      case 'nameZA':
+        results.sort((a, b) => b.product_name.localeCompare(a.product_name));
+        break;
+      default:
+        break;
+    }
+
+    return results;
+  }, [productsInit, filterStatus, debouncedSearchTerm, priceRange, sortOption]);
+
+  // Paginated products for the current page
   const currentProducts = useMemo(() => {
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     return filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   }, [filteredProducts, currentPage]);
 
+  // Handlers with useCallback to prevent unnecessary re-renders
   const handleFilterByCategory = useCallback((categoryId) => {
     setFilterStatus(categoryId);
     setCurrentPage(1);
   }, []);
 
-  const debouncedSearch = useCallback(
-    debounce((value) => setSearchTerm(value), 300),
-    []
-  );
-
-  const handleSearchChange = useCallback((e) => debouncedSearch(e.target.value), [debouncedSearch]);
+  const handleSearchChange = useCallback((e) => {
+    setSearchTerm(e.target.value);
+  }, []);
 
   const handlePageChange = useCallback((page) => setCurrentPage(page), []);
+
+  const handlePriceRangeChange = useCallback((e) => {
+    const value = e.target.value;
+    if (value === 'all') {
+      setPriceRange([0, 10000000]);
+    } else if (value === '0-500000') {
+      setPriceRange([0, 500000]);
+    } else if (value === '500000-1000000') {
+      setPriceRange([500000, 1000000]);
+    } else if (value === '1000000+') {
+      setPriceRange([1000000, 10000000]);
+    }
+    setCurrentPage(1);
+  }, []);
+
+  const handleSortOptionChange = useCallback((e) => {
+    setSortOption(e.target.value);
+  }, []);
+
+  // Theming and styling using Chakra UI
+  const bgColor = useColorModeValue('#000000', '#000000'); // Match Hero background color
+  const textColor = useColorModeValue('#FFFFFF', '#FFFFFF');
+  const headingColor = useColorModeValue('#FFFFFF', '#FFFFFF');
+  const accentColor = useColorModeValue('#d4af37', '#d4af37'); // Gold color for luxury
 
   return (
     <>
       <Helmet>
-        <title>Global Real Estate Platform</title>
-        <meta name="description" content="Explore a global collection of exquisite real estate properties." />
+        <title>Luxury Real Estate Platform</title>
+        <meta
+          name="description"
+          content="Explore a curated collection of the world's most luxurious real estate properties."
+        />
       </Helmet>
 
-      <Suspense fallback={<LoadingSpinner />}>
+      {/* Hero Section */}
+      <Suspense fallback={<Spinner color={accentColor} size="xl" />}>
         <Hero />
       </Suspense>
-
-      <Suspense fallback={<LoadingSpinner />}>
+  {/* Companies Section */}
+  <Suspense fallback={<Spinner color={accentColor} size="xl" />}>
         <Companies />
       </Suspense>
-
-      <MotionBox
-        px={10}
-        py={12}
-        mx="auto"
-        bgGradient="linear(to-br, gray.800, black)"
-        color="white"
      
-        shadow="2xl"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <Heading
-          as="h2"
-          size="2xl"
-          textAlign="center"
-          mb={8}
-          bgGradient="linear(to-r, teal.300, blue.400, purple.500)"
-          bgClip="text"
-          fontWeight="extrabold"
-          letterSpacing="widest"
+      {/* Main Content */}
+      <Box bg={bgColor} color={textColor} py={12} id="properties">
+        <MotionBox
+          px={{ base: 4, md: 10 }}
+          mx="auto"
+          maxW="1400px"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
         >
-          Explore Global Properties
-        </Heading>
-
-        <Flex justify="space-between" align="center" wrap="wrap" mb={8}>
-          <Wrap spacing={6} align="center">
-            <WrapItem>
-              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  onClick={() => handleFilterByCategory(null)}
-                  variant={filterStatus === null ? "solid" : "ghost"}
-                  bgGradient={filterStatus === null ? "linear(to-r, teal.400, teal.600)" : undefined}
-                  color={filterStatus === null ? "white" : "teal.300"}
-                  size="lg"
-                  shadow="xl"
-                >
-                  All
-                </Button>
-              </motion.div>
-            </WrapItem>
-            {categories.map((category) => (
-              <WrapItem key={category._id}>
-                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                  <Button
-                    onClick={() => handleFilterByCategory(category._id)}
-                    variant={filterStatus === category._id ? "solid" : "ghost"}
-                    bgGradient={
-                      filterStatus === category._id ? "linear(to-r, teal.400, teal.600)" : undefined
-                    }
-                    color={filterStatus === category._id ? "white" : "teal.300"}
-                    size="lg"
-                    shadow="xl"
-                  >
-                    {category.category_name}
-                  </Button>
-                </motion.div>
-              </WrapItem>
-            ))}
-          </Wrap>
-
-          <InputGroup maxW="450px">
-            <Input
-              placeholder="Search properties..."
-              onChange={handleSearchChange}
+          {/* Enhanced Heading */}
+          <Heading
+            as="h2"
+            size="2xl"
+            textAlign="center"
+            mb={12}
+            color={headingColor}
+            fontFamily="'Playfair Display', serif"
+            fontWeight="700"
+            lineHeight="1.1"
+            letterSpacing="tight"
+          >
+            Discover the{' '}
+            <span style={{ color: accentColor }}>World's Finest Properties</span>
+          </Heading>
+        
+{/* Filters and Search - Enhanced Design */}
+<Box
+  bg="linear-gradient(135deg, rgba(40, 40, 40, 0.9), rgba(20, 20, 20, 0.9))"
+  p={8}
+  borderRadius="2xl"
+  boxShadow="0 10px 30px rgba(0, 0, 0, 0.5)"
+  backdropFilter="blur(12px)"
+  mb={12}
+>
+  <Flex
+    direction="column"
+    align="center"
+    justify="center"
+    gap={6}
+    wrap="wrap"
+  >
+    {/* Category Filters */}
+    <Wrap spacing={4} justify="center">
+      {isCategoriesLoading ? (
+        <Skeleton height="50px" width="100px" borderRadius="md" />
+      ) : (
+        <>
+          <WrapItem>
+            <MotionButton
+              onClick={() => handleFilterByCategory(null)}
+              variant="solid"
+              bg={filterStatus === null ? "gold.400" : "rgba(255, 255, 255, 0.1)"}
+              color={filterStatus === null ? "black" : "white"}
               size="lg"
-              borderRadius="lg"
-              bg="gray.800"
-              color="white"
-              _placeholder={{ color: "gray.400" }}
-              shadow="xl"
-            />
-            <InputRightElement>
-              <IconButton
-                aria-label="Search"
-                icon={<BsSearchHeart />}
-                colorScheme="teal"
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.95 }}
+              _hover={{
+                bg: "gold.500",
+                boxShadow: "0px 4px 15px rgba(255, 215, 0, 0.8)",
+              }}
+              borderRadius="full"
+              px={8}
+              py={3}
+              fontWeight="bold"
+              boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"
+            >
+              All
+            </MotionButton>
+          </WrapItem>
+          {categories.map((category) => (
+            <WrapItem key={category._id}>
+              <MotionButton
+                onClick={() => handleFilterByCategory(category._id)}
+                variant="solid"
+                bg={
+                  filterStatus === category._id
+                    ? "gold.400"
+                    : "rgba(255, 255, 255, 0.1)"
+                }
+                color={filterStatus === category._id ? "black" : "white"}
                 size="lg"
-                shadow="xl"
-              />
-            </InputRightElement>
-          </InputGroup>
-        </Flex>
-
-        <Grid
-          templateColumns={{
-            base: "repeat(1, 1fr)",
-            sm: "repeat(2, 1fr)",
-            md: "repeat(3, 1fr)",
-            lg: "repeat(4, 1fr)",
-          }}
-          gap={8}
-        >
-          {currentProducts.map((product) => (
-            <GridItem key={product._id}>
-              <Suspense fallback={<Spinner color="teal.300" />}>
-                <ProductCard product={product} />
-              </Suspense>
-            </GridItem>
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
+                _hover={{
+                  bg: "gold.500",
+                  boxShadow: "0px 4px 15px rgba(255, 215, 0, 0.8)",
+                }}
+                borderRadius="full"
+                px={8}
+                py={3}
+                fontWeight="bold"
+                boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"
+              >
+                {category.category_name}
+              </MotionButton>
+            </WrapItem>
           ))}
-        </Grid>
+        </>
+      )}
+    </Wrap>
 
-        <Suspense fallback={<Spinner color="teal.300" />}>
-          <Pagination
-            currentPage={currentPage}
-            productsPerPage={productsPerPage}
-            totalProducts={filteredProducts.length}
-            onPageChange={handlePageChange}
-          />
-        </Suspense>
-      </MotionBox>
+    {/* Search and Filter Options */}
+    <Flex
+      direction={{ base: "column", md: "row" }}
+      align="center"
+      justify="center"
+      wrap="wrap"
+      gap={6}
+      bg="rgba(255, 255, 255, 0.1)"
+      p={6}
+      borderRadius="lg"
+      boxShadow="0 6px 20px rgba(0, 0, 0, 0.5)"
+    >
+      <InputGroup maxW="300px">
+        <InputLeftElement pointerEvents="none">
+          <BsSearch color="gold" />
+        </InputLeftElement>
+        <Input
+          placeholder="Search properties..."
+          onChange={handleSearchChange}
+          size="lg"
+          borderRadius="full"
+          bg="rgba(255, 255, 255, 0.2)"
+          color="white"
+          _placeholder={{ color: "gray.400" }}
+          _focus={{
+            bg: "rgba(255, 255, 255, 0.3)",
+            boxShadow: "0px 4px 10px rgba(255, 255, 255, 0.4)",
+          }}
+        />
+      </InputGroup>
 
-      <Suspense fallback={<LoadingSpinner />}>
+      <Select
+        placeholder="Price Range"
+        onChange={handlePriceRangeChange}
+        size="lg"
+        maxW="200px"
+        borderRadius="full"
+        bg="rgba(255, 255, 255, 0.2)"
+        color="white"
+        _focus={{
+          bg: "rgba(255, 255, 255, 0.3)",
+          boxShadow: "0px 4px 10px rgba(255, 255, 255, 0.4)",
+        }}
+        boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"
+      >
+        <option value="all" style={{ color: "#000" }}>
+          All Prices
+        </option>
+        <option value="0-500000" style={{ color: "#000" }}>
+          $0 - $500,000
+        </option>
+        <option value="500000-1000000" style={{ color: "#000" }}>
+          $500,000 - $1,000,000
+        </option>
+        <option value="1000000+" style={{ color: "#000" }}>
+          $1,000,000+
+        </option>
+      </Select>
+
+      <Select
+        placeholder="Sort By"
+        onChange={handleSortOptionChange}
+        size="lg"
+        maxW="200px"
+        borderRadius="full"
+        bg="rgba(255, 255, 255, 0.2)"
+        color="white"
+        _focus={{
+          bg: "rgba(255, 255, 255, 0.3)",
+          boxShadow: "0px 4px 10px rgba(255, 255, 255, 0.4)",
+        }}
+        boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"
+      >
+        <option value="default" style={{ color: "#000" }}>
+          Default
+        </option>
+        <option value="priceLowHigh" style={{ color: "#000" }}>
+          Price: Low to High
+        </option>
+        <option value="priceHighLow" style={{ color: "#000" }}>
+          Price: High to Low
+        </option>
+        <option value="nameAZ" style={{ color: "#000" }}>
+          Name: A to Z
+        </option>
+        <option value="nameZA" style={{ color: "#000" }}>
+          Name: Z to A
+        </option>
+      </Select>
+    </Flex>
+  </Flex>
+</Box>
+
+
+
+          {/* Products Grid */}
+          {isProductsLoading ? (
+            <Grid
+              templateColumns={{
+                base: 'repeat(1, 1fr)',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
+                lg: 'repeat(4, 1fr)',
+              }}
+              gap={8}
+            >
+              {Array.from({ length: productsPerPage }).map((_, index) => (
+                <GridItem key={index}>
+                  <Skeleton height="400px" borderRadius="lg" />
+                </GridItem>
+              ))}
+            </Grid>
+          ) : filteredProducts.length === 0 ? (
+            <VStack py={20}>
+              <Text fontSize="xl" color="gray.500">
+                No properties found.
+              </Text>
+            </VStack>
+          ) : (
+            <>
+              <Grid
+                templateColumns={{
+                  base: 'repeat(1, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                  lg: 'repeat(4, 1fr)',
+                }}
+                gap={8}
+              >
+                {currentProducts.map((product) => (
+                  <MotionGridItem
+                    key={product._id}
+                    whileHover={{ y: -10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Suspense
+                      fallback={<Skeleton height="400px" borderRadius="lg" />}
+                    >
+                      <ProductCard product={product} />
+                    </Suspense>
+                  </MotionGridItem>
+                ))}
+              </Grid>
+
+              {/* Pagination */}
+              <Suspense fallback={<Spinner color={accentColor} size="xl" />}>
+                <Pagination
+                  currentPage={currentPage}
+                  productsPerPage={productsPerPage}
+                  totalProducts={filteredProducts.length}
+                  onPageChange={handlePageChange}
+                />
+              </Suspense>
+            </>
+          )}
+        </MotionBox>
+      </Box>
+
+      {/* Value Proposition Section */}
+      <Suspense fallback={<Spinner color={accentColor} size="xl" />}>
         <Value />
       </Suspense>
+
+    
     </>
   );
 };
 
-
-
-// Fetch all products function
-export const getAllProducts = async () => {
-  try {
-    const { data } = await axiosInstance.get("/products/customers/all");
-    return data.products;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return [];
-  }
-};
-
-export default Home;
+export default React.memo(Home);
