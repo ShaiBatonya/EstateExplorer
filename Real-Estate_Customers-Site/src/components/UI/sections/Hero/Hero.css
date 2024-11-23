@@ -1,3 +1,4 @@
+
 /* src/components/UI/sections/Hero/Hero.css */
 
 :root {
@@ -16,36 +17,33 @@
   color: var(--text-color);
   background: var(--background-color);
   overflow: hidden;
-  padding: 4rem 2rem;
+  padding: 4rem 1rem;
   padding-top: 5rem;
-  
 }
 
 .hero-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1400px;
-  width: 90%;
+  max-width: 1200px;
+  width: 95%;
   margin: 0 auto;
   flex-wrap: wrap;
-  padding-top: 5rem;
-  
+  padding-top: 4rem;
 }
 
 .hero-content {
   flex: 1;
   max-width: 600px;
-  
+  width: 100%;
 }
 
 .hero-title {
   font-family: var(--heading-font);
   font-weight: 700;
-  font-size: 3.5rem;
+  font-size: 3rem;
   line-height: 1.2;
   margin-bottom: 1rem;
-  
   color: var(--text-color);
 }
 
@@ -56,37 +54,38 @@
 .hero-subtitle {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 2rem;
-  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
   color: var(--luxury-color);
 }
 
 .hero-description {
   font-family: var(--font-family);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: bold;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   line-height: 1.6;
   color: #dcdcdc;
 }
 
 .cta-buttons {
   display: flex;
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
 .button {
-  padding: 0.8rem 2rem;
-  border-radius: 50px;
+  padding: 0.7rem 1.8rem;
+  border-radius: 40px;
   font-family: var(--font-family);
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  transition: background 0.3s, transform 0.3s;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
 .primary-button {
@@ -98,7 +97,7 @@
 .primary-button:hover {
   background: #b18c28;
   transform: translateY(-5px);
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
 }
 
 .secondary-button {
@@ -111,52 +110,69 @@
   background: var(--luxury-color);
   color: var(--background-color);
   transform: translateY(-5px);
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
 }
 
-.stats {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
+.stats-carousel {
+  margin-top: 3rem;
+  width: 100%;
 }
 
-.stat {
+.stat-slide {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 15px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat-slide:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .stat .plus-sign {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: var(--luxury-color);
   margin-left: 0.2rem;
 }
 
-.stat p {
+.stat-label {
   margin-top: 0.5rem;
-  font-size: 1rem;
-  color: var(--text-color);
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--luxury-color);
+}
+
+.stat-description {
+  font-size: 0.9rem;
+  color: #dcdcdc;
+  margin-top: 0.3rem;
 }
 
 .hero-image-container {
   flex: 1;
-  max-width: 600px;
+  max-width: 500px;
+  width: 100%;
   position: relative;
-  margin-left: 2rem;
+  margin: 2rem 0 0;
 }
 
 .hero-image {
-  width: 85%;
+  width: 100%;
   height: auto;
   display: block;
-  border-radius: 35px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
-  transition: transform 0.5s;
-  
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  transition: transform 0.5s, box-shadow 0.5s;
 }
 
 .hero-image:hover {
   transform: scale(1.05);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
 }
 
 .image-overlay {
@@ -177,55 +193,82 @@
 
   .hero-content {
     text-align: center;
+    max-width: 100%;
   }
 
   .cta-buttons {
     justify-content: center;
   }
 
-  .stats {
-    justify-content: center;
-  }
-
   .hero-image-container {
-    margin: 2rem 0 0 0;
+    margin: 2rem 0;
   }
 }
 
 @media (max-width: 768px) {
   .hero-title {
-    font-size: 3rem;
+    font-size: 2.8rem;
   }
 
   .hero-subtitle {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
 
   .hero-description {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
-  .stats {
-    flex-direction: column;
-    align-items: center;
+  .stats-carousel {
+    margin-top: 2rem;
   }
 }
 
 @media (max-width: 480px) {
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
 
   .hero-subtitle {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 
   .hero-description {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .button {
     padding: 0.6rem 1.5rem;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .stat-slide {
+    padding: 1.2rem;
+  }
+
+  .hero-image-container {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .hero-description {
+    font-size: 0.75rem;
+  }
+
+  .button {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.8rem;
+  }
+
+  .stat-slide {
+    padding: 1rem;
   }
 }

@@ -9,6 +9,7 @@ import {
   HStack,
   useDisclosure,
   Text,
+  Spinner,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { AuthContext } from "../../../../context/AuthContext";
@@ -22,16 +23,16 @@ const StyledNav = styled(Box)`
   left: 0;
   width: 100%;
   z-index: 1000;
-  background: linear-gradient(135deg, rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.6));
-  backdrop-filter: blur(10px);
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.7);
-  padding: 1.2rem 2rem;
+  background: linear-gradient(135deg, rgba(18, 18, 18, 0.75), rgba(18, 18, 18, 0.55));
+  backdrop-filter: blur(12px);
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.6);
+  padding: 1.5rem 2rem;
   transition: background-color 0.4s ease, padding 0.3s ease, backdrop-filter 0.4s;
 
   &.scrolled {
-    background: linear-gradient(135deg, rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.8));
-    padding: 0.8rem 1.5rem;
-    backdrop-filter: blur(15px);
+    background: linear-gradient(135deg, rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.7));
+    padding: 1rem 1.5rem;
+    backdrop-filter: blur(20px);
   }
 
   a {
@@ -66,8 +67,8 @@ const StyledNav = styled(Box)`
   }
 
   .mobile-menu {
-    background: rgba(18, 18, 18, 0.95);
-    backdrop-filter: blur(12px);
+    background: rgba(18, 18, 18, 0.9);
+    backdrop-filter: blur(14px);
     color: white;
     position: absolute;
     top: 60px;
@@ -105,10 +106,11 @@ const StyledNav = styled(Box)`
 `;
 
 const Nav = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, setUser, loading } = useContext(AuthContext);
   const { cartItems = [] } = useContext(CartContext);
   const [isScrolled, setIsScrolled] = useState(false);
   const { isOpen, onToggle } = useDisclosure();
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -119,10 +121,29 @@ const Nav = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    // Load the session status on mount
+    const userData = sessionStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+    setIsLoaded(true);
+  }, [setUser]);
+
+  useEffect(() => {
+    // Save the user data to session storage when user state changes
+    if (user) {
+      sessionStorage.setItem("user", JSON.stringify(user));
+    } else {
+      sessionStorage.removeItem("user");
+    }
+  }, [user]);
+
   const handleLogout = async () => {
     try {
       await logout();
       alert("You have successfully logged out.");
+      sessionStorage.removeItem("user"); // Remove user data on logout
     } catch (error) {
       alert("An error occurred while logging out.");
     }
@@ -141,7 +162,8 @@ const Nav = () => {
             textDecoration: "none",
           }}
         >
-          <Text fontFamily="'Playfair Display', serif">Luxe Realty</Text>
+          <Text className="hero-subtitle">
+          Estate Explorer</Text>
         </RouterLink>
 
         {/* Desktop Navigation */}
@@ -166,62 +188,74 @@ const Nav = () => {
 
         {/* User Actions */}
         <Stack direction="row" spacing={4} align="center">
-          {user ? (
-            <Button
-              onClick={handleLogout}
-              size="sm"
-              bg="linear-gradient(90deg, #ff758c, #ff7eb3)"
-              color="white"
-              _hover={{
-                bg: "linear-gradient(90deg, #f45d85, #ff6fb4)",
-                boxShadow: "0px 4px 12px rgba(255, 113, 181, 0.8)",
-              }}
-              borderRadius="full"
-              px={6}
-              fontWeight="bold"
-            >
-              Logout
-            </Button>
+          {isLoaded ? (
+            user ? (
+              <Button
+                onClick={handleLogout}
+                size="sm"
+                bg="linear-gradient(90deg, #5a5a5a, #434343)"
+                color="white"
+                _hover={{
+                  bg: "linear-gradient(90deg, #4a4a4a, #3a3a3a)",
+                  boxShadow: "0px 4px 12px rgba(90, 90, 90, 0.8)",
+                }}
+                borderRadius="full"
+                px={6}
+                fontWeight="bold"
+              >
+                Logout
+              </Button>
+            ) : (
+              <>
+                <Button
+                  as={RouterLink}
+                  to="/login"
+                  size={{ base: "xs", md: "sm" }}
+                  bg="linear-gradient(90deg, #6dd5ed, #2193b0)"
+                  color="white"
+                  _hover={{
+                    bg: "linear-gradient(90deg, #5ab8d4, #1e7fa1)",
+                    boxShadow: "0px 4px 12px rgba(109, 213, 237, 0.8)",
+                  }}
+                  borderRadius="full"
+                  px={4}
+                  fontWeight="bold"
+                >
+                  Login
+                </Button>
+                <Button
+                  as={RouterLink}
+                  to="/register"
+                  size={{ base: "xs", md: "sm" }}
+                  bg="linear-gradient(90deg, #ff9a9e, #fad0c4)"
+                  color="white"
+                  _hover={{
+                    bg: "linear-gradient(90deg, #f47e85, #eab8b8)",
+                    boxShadow: "0px 4px 12px rgba(255, 154, 158, 0.8)",
+                  }}
+                  borderRadius="full"
+                  px={4}
+                  fontWeight="bold"
+                >
+                  Register
+                </Button>
+              </>
+            )
           ) : (
-            <>
-              <Button
-                as={RouterLink}
-                to="/login"
-                size="sm"
-                bg="linear-gradient(90deg, #4facfe, #00f2fe)"
-                color="white"
-                _hover={{
-                  bg: "linear-gradient(90deg, #38bdf8, #00c6ff)",
-                  boxShadow: "0px 4px 12px rgba(56, 189, 248, 0.8)",
-                }}
-                borderRadius="full"
-                px={6}
-                fontWeight="bold"
-              >
-                Login
-              </Button>
-              <Button
-                as={RouterLink}
-                to="/register"
-                size="sm"
-                bg="linear-gradient(90deg, #43e97b, #38f9d7)"
-                color="white"
-                _hover={{
-                  bg: "linear-gradient(90deg, #31e277, #29f7c8)",
-                  boxShadow: "0px 4px 12px rgba(67, 233, 123, 0.8)",
-                }}
-                borderRadius="full"
-                px={6}
-                fontWeight="bold"
-              >
-                Register
-              </Button>
-            </>
+            <Spinner color="white" size="sm" />
           )}
         </Stack>
 
         {/* Mobile Navigation */}
-        <Flex display={{ base: "flex", md: "none" }}>
+        <Flex display={{ base: "flex", md: "none" }} align="center">
+          {user && (
+            <RouterLink to="/cart" style={{ position: "relative", marginRight: "1rem" }}>
+              <FaShoppingCart size={24} color="#ffd700" />
+              {cartItems.length > 0 && (
+                <Box className="cart-badge">{cartItems.length}</Box>
+              )}
+            </RouterLink>
+          )}
           <IconButton
             onClick={onToggle}
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -245,7 +279,7 @@ const Nav = () => {
             Contact
           </RouterLink>
           {user ? (
-            <Button onClick={handleLogout} colorScheme="red">
+            <Button onClick={handleLogout} bg="linear-gradient(90deg, #5a5a5a, #434343)" color="white" _hover={{ bg: "linear-gradient(90deg, #4a4a4a, #3a3a3a)", boxShadow: "0px 4px 12px rgba(90, 90, 90, 0.8)" }}>
               Logout
             </Button>
           ) : (

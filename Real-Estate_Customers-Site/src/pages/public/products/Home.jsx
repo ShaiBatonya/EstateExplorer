@@ -199,11 +199,7 @@ const Home = () => {
       <Suspense fallback={<Spinner color={accentColor} size="xl" />}>
         <Hero />
       </Suspense>
-  {/* Companies Section */}
-  <Suspense fallback={<Spinner color={accentColor} size="xl" />}>
-        <Companies />
-      </Suspense>
-     
+
       {/* Main Content */}
       <Box bg={bgColor} color={textColor} py={12} id="properties">
         <MotionBox
@@ -214,12 +210,32 @@ const Home = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          {/* Enhanced Heading */}
-          <Heading
+   
+        
+{/* Filters and Search - Ultimate Modern Design */}
+<Box
+  bg="linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(10, 10, 10, 0.95))"
+  p={{ base: 10, md: 16 }}
+  borderRadius="3xl"
+  boxShadow="0px 40px 70px rgba(0, 0, 0, 0.8)"
+  backdropFilter="blur(15px)"
+  mb={16}
+  w="100%"
+  position="relative"
+>
+  <Flex
+    direction="column"
+    align="center"
+    justify="center"
+    gap={12}
+    wrap="wrap"
+  >
+       {/* Enhanced Heading */}
+       <Heading
             as="h2"
             size="2xl"
             textAlign="center"
-            mb={12}
+        
             color={headingColor}
             fontFamily="'Playfair Display', serif"
             fontWeight="700"
@@ -229,47 +245,53 @@ const Home = () => {
             Discover the{' '}
             <span style={{ color: accentColor }}>World's Finest Properties</span>
           </Heading>
-        
-{/* Filters and Search - Enhanced Design */}
-<Box
-  bg="linear-gradient(135deg, rgba(40, 40, 40, 0.9), rgba(20, 20, 20, 0.9))"
-  p={8}
-  borderRadius="2xl"
-  boxShadow="0 10px 30px rgba(0, 0, 0, 0.5)"
-  backdropFilter="blur(12px)"
-  mb={12}
->
-  <Flex
-    direction="column"
-    align="center"
-    justify="center"
-    gap={6}
-    wrap="wrap"
-  >
+
+    {/* Decorative Gradient Line */}
+    <Box
+      w="150px"
+      h="5px"
+      bgGradient="linear(to-r, #FFD700, #FFFFFF, #FFD700)"
+      borderRadius="full"
+      animation="gradient-move 3s infinite alternate"
+      boxShadow="0px 0px 20px rgba(255, 215, 0, 0.6)"
+    />
+
     {/* Category Filters */}
-    <Wrap spacing={4} justify="center">
+    <Wrap spacing={6} justify="center">
       {isCategoriesLoading ? (
-        <Skeleton height="50px" width="100px" borderRadius="md" />
+        Array.from({ length: 3 }).map((_, index) => (
+          <Skeleton
+            key={index}
+            height="50px"
+            width="120px"
+            borderRadius="full"
+          />
+        ))
       ) : (
         <>
           <WrapItem>
             <MotionButton
               onClick={() => handleFilterByCategory(null)}
               variant="solid"
-              bg={filterStatus === null ? "gold.400" : "rgba(255, 255, 255, 0.1)"}
-              color={filterStatus === null ? "black" : "white"}
+              bg={filterStatus === null ? "#FFD700" : "rgba(255, 255, 255, 0.2)"}
+              color={filterStatus === null ? "#000" : "#fff"}
               size="lg"
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-              _hover={{
-                bg: "gold.500",
-                boxShadow: "0px 4px 15px rgba(255, 215, 0, 0.8)",
+              whileHover={{
+                scale: 1.1,
+                boxShadow: "0px 0px 25px rgba(255, 215, 0, 1)",
               }}
+              whileTap={{ scale: 0.95 }}
               borderRadius="full"
-              px={8}
-              py={3}
-              fontWeight="bold"
-              boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"
+              px={10}
+              py={4}
+              fontWeight="semibold"
+              fontSize="lg"
+              transition="all 0.3s"
+              textTransform="capitalize"
+              _hover={{
+                bg: "#FFC700",
+                boxShadow: "0px 15px 30px rgba(255, 215, 0, 0.8)",
+              }}
             >
               All
             </MotionButton>
@@ -281,22 +303,27 @@ const Home = () => {
                 variant="solid"
                 bg={
                   filterStatus === category._id
-                    ? "gold.400"
-                    : "rgba(255, 255, 255, 0.1)"
+                    ? "#FFD700"
+                    : "rgba(255, 255, 255, 0.2)"
                 }
-                color={filterStatus === category._id ? "black" : "white"}
+                color={filterStatus === category._id ? "#000" : "#fff"}
                 size="lg"
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.95 }}
-                _hover={{
-                  bg: "gold.500",
-                  boxShadow: "0px 4px 15px rgba(255, 215, 0, 0.8)",
+                whileHover={{
+                  scale: 1.1,
+                  boxShadow: "0px 0px 25px rgba(255, 215, 0, 1)",
                 }}
+                whileTap={{ scale: 0.95 }}
                 borderRadius="full"
-                px={8}
-                py={3}
-                fontWeight="bold"
-                boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"
+                px={10}
+                py={4}
+                fontWeight="semibold"
+                fontSize="lg"
+                transition="all 0.3s"
+                textTransform="capitalize"
+                _hover={{
+                  bg: "#FFC700",
+                  boxShadow: "0px 15px 30px rgba(255, 215, 0, 0.8)",
+                }}
               >
                 {category.category_name}
               </MotionButton>
@@ -312,44 +339,53 @@ const Home = () => {
       align="center"
       justify="center"
       wrap="wrap"
-      gap={6}
-      bg="rgba(255, 255, 255, 0.1)"
-      p={6}
-      borderRadius="lg"
-      boxShadow="0 6px 20px rgba(0, 0, 0, 0.5)"
+      gap={10}
+      bg="rgba(255, 255, 255, 0.05)"
+      p={8}
+      borderRadius="3xl"
+      boxShadow="0px 30px 60px rgba(0, 0, 0, 0.8)"
+      w="100%"
     >
-      <InputGroup maxW="300px">
+      {/* Search Input */}
+      <InputGroup maxW="450px" w="100%">
         <InputLeftElement pointerEvents="none">
-          <BsSearch color="gold" />
+          <BsSearch color="#FFD700" size="1.6em" />
         </InputLeftElement>
         <Input
-          placeholder="Search properties..."
+          placeholder="Search for properties..."
           onChange={handleSearchChange}
           size="lg"
           borderRadius="full"
           bg="rgba(255, 255, 255, 0.2)"
-          color="white"
-          _placeholder={{ color: "gray.400" }}
+          color="#fff"
+          fontFamily="'Roboto', sans-serif"
+          fontSize="lg"
+          fontWeight="medium"
+          _placeholder={{ color: "rgba(255, 255, 255, 0.6)" }}
           _focus={{
             bg: "rgba(255, 255, 255, 0.3)",
-            boxShadow: "0px 4px 10px rgba(255, 255, 255, 0.4)",
+            boxShadow: "0px 0px 20px rgba(255, 255, 255, 0.5)",
           }}
         />
       </InputGroup>
 
+      {/* Price Range Dropdown */}
       <Select
         placeholder="Price Range"
         onChange={handlePriceRangeChange}
         size="lg"
-        maxW="200px"
+        maxW="280px"
         borderRadius="full"
         bg="rgba(255, 255, 255, 0.2)"
-        color="white"
+        color="#fff"
+        fontFamily="'Roboto', sans-serif"
+        fontSize="lg"
+        fontWeight="medium"
         _focus={{
           bg: "rgba(255, 255, 255, 0.3)",
-          boxShadow: "0px 4px 10px rgba(255, 255, 255, 0.4)",
+          boxShadow: "0px 0px 20px rgba(255, 255, 255, 0.5)",
         }}
-        boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"
+        boxShadow="0px 20px 50px rgba(0, 0, 0, 0.8)"
       >
         <option value="all" style={{ color: "#000" }}>
           All Prices
@@ -365,19 +401,23 @@ const Home = () => {
         </option>
       </Select>
 
+      {/* Sort By Dropdown */}
       <Select
         placeholder="Sort By"
         onChange={handleSortOptionChange}
         size="lg"
-        maxW="200px"
+        maxW="280px"
         borderRadius="full"
         bg="rgba(255, 255, 255, 0.2)"
-        color="white"
+        color="#fff"
+        fontFamily="'Roboto', sans-serif"
+        fontSize="lg"
+        fontWeight="medium"
         _focus={{
           bg: "rgba(255, 255, 255, 0.3)",
-          boxShadow: "0px 4px 10px rgba(255, 255, 255, 0.4)",
+          boxShadow: "0px 0px 20px rgba(255, 255, 255, 0.5)",
         }}
-        boxShadow="0 4px 15px rgba(0, 0, 0, 0.4)"
+        boxShadow="0px 20px 50px rgba(0, 0, 0, 0.8)"
       >
         <option value="default" style={{ color: "#000" }}>
           Default
@@ -398,7 +438,6 @@ const Home = () => {
     </Flex>
   </Flex>
 </Box>
-
 
 
           {/* Products Grid */}
@@ -468,7 +507,11 @@ const Home = () => {
       <Suspense fallback={<Spinner color={accentColor} size="xl" />}>
         <Value />
       </Suspense>
-
+  {/* Companies Section */}
+  <Suspense fallback={<Spinner color={accentColor} size="xl" />}>
+        <Companies />
+      </Suspense>
+     
     
     </>
   );

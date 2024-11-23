@@ -1,3 +1,11 @@
+:root {
+  --luxury-color: #d4af37; /* Gold color */
+  --text-color: #ffffff;
+  --background-color: #000000;
+  --overlay-color: rgba(0, 0, 0, 0.4);
+  --font-family: 'Heebo', sans-serif;
+  --heading-font: 'Playfair Display', serif;
+}
 .nav-container {
   background-color: rgba(33, 33, 33, 0.5);
   backdrop-filter: blur(10px);
@@ -8,7 +16,12 @@
 .nav-container.scrolled {
   background-color: rgba(33, 33, 33, 0.9);
 }
+.hero-subtitle {
+  font-family: var(--font-family);
 
+
+  color: var(--luxury-color);
+}
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
