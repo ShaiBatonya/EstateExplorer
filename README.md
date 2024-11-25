@@ -1,5 +1,6 @@
 # **Real Estate and Property Purchasing Platform**
 
+![Platform Preview](assets/images/platform-preview.png)
 
 ### A comprehensive MERN-stack web application for buying, selling, and managing real estate properties.
 
@@ -20,7 +21,7 @@
 
 ## **Overview**
 This project is a full-stack web application designed to streamline the process of buying and selling real estate properties.  
-With an interactive and modern user interface, powerful backend services, and a scalable database, this platform ensures a smooth user experience, whether they are property buyers, sellers, or administrators.
+With an interactive and modern user interface, powerful backend services, and a scalable database, this platform ensures a smooth experience for users, whether they are property buyers, sellers, or administrators.
 
 ---
 
@@ -39,6 +40,7 @@ With an interactive and modern user interface, powerful backend services, and a 
 - **Responsive Design:** Optimized for all devices, including desktops, tablets, and smartphones.
 - **Secure Data Storage:** All property and user data is safely stored in MongoDB.
 
+![Admin Panel Screenshot](assets/images/admin-panel.png)
 
 ---
 
@@ -55,4 +57,5 @@ Backend:
 
 Database:
 - MongoDB: NoSQL database for scalable data storage.
+
 
