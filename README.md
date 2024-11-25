@@ -1,6 +1,5 @@
 # **Real Estate and Property Purchasing Platform**
 
-![Platform Preview](assets/images/platform-preview.png)
 
 ### A comprehensive MERN-stack web application for buying, selling, and managing real estate properties.
 
@@ -21,7 +20,7 @@
 
 ## **Overview**
 This project is a full-stack web application designed to streamline the process of buying and selling real estate properties.  
-With an interactive and modern user interface, powerful backend services, and a scalable database, this platform ensures a smooth experience for users, whether they are property buyers, sellers, or administrators.
+With an interactive and modern user interface, powerful backend services, and a scalable database, this platform ensures a smooth user experience, whether they are property buyers, sellers, or administrators.
 
 ---
 
@@ -40,12 +39,11 @@ With an interactive and modern user interface, powerful backend services, and a 
 - **Responsive Design:** Optimized for all devices, including desktops, tablets, and smartphones.
 - **Secure Data Storage:** All property and user data is safely stored in MongoDB.
 
-![Admin Panel Screenshot](assets/images/admin-panel.png)
 
 ---
 
 ## **Technology Stack**
-```text
+```plaintext
 Frontend:
 - React: Dynamic user interface development.
 - Chakra UI: Modern and customizable component library.
@@ -57,50 +55,4 @@ Backend:
 
 Database:
 - MongoDB: NoSQL database for scalable data storage.
-Installation and Setup
-Prerequisites
-Node.js (v14 or higher)
-MongoDB (local or cloud instance)
-Clone the Repository
-bash
-Copy code
-git clone https://github.com/yourusername/real-estate-platform.git
-cd real-estate-platform
-Install Dependencies
-For the Backend:
-bash
-Copy code
-cd server
-npm install
-For the Frontend:
-bash
-Copy code
-cd client
-npm install
-Run the Application
-Start the Backend:
-bash
-Copy code
-cd server
-npm start
-Start the Frontend:
-bash
-Copy code
-cd client
-npm start
-Access the Platform
-Open your browser and navigate to:
-http://localhost:3000
-Usage
-Buyers and Sellers:
-Browse available properties.
-Register and log in to manage favorites and transactions.
 
-Admins:
-Access the admin panel for managing property listings and platform data.
-View detailed analytics on user interactions.
-Future Enhancements
-Payment Integration: Add support for online payments through trusted gateways.
-Advanced Filtering: Enable users to search properties by price, location, and size.
-Chat Support: Real-time communication between buyers and sellers.
-AI Insights: Predict property prices and trends.
