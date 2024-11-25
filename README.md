@@ -45,7 +45,7 @@ With an interactive and modern user interface, powerful backend services, and a 
 ---
 
 ## **Technology Stack**
-```plaintext
+
 Frontend:
 - React: Dynamic user interface development.
 - Chakra UI: Modern and customizable component library.
@@ -58,4 +58,47 @@ Backend:
 Database:
 - MongoDB: NoSQL database for scalable data storage.
 
+### Installation and Setup
+
+Prerequisites
+- Node.js (v14 or higher)
+- MongoDB (local or cloud instance)
+
+
+Clone the Repository
+git clone https://github.com/yourusername/real-estate-platform.git
+cd real-estate-platform
+
+Install Dependencies For the Backend: 
+cd server
+npm install
+
+
+For the Frontend:
+cd client
+npm install
+
+Run the Application 
+cd server
+npm start
+
+Access the Platform 
+Open your browser and navigate to:  
+http://localhost:3000
+
+
+Usage
+Buyers and Sellers:
+- Browse available properties.
+- Register and log in to manage favorites and transactions.
+
+Admins:
+- Access the admin panel for managing property listings and platform data.
+- View detailed analytics on user interactions.
+
+Future Enhancements
+- Payment Integration: Add support for online payments through trusted gateways.
+- Advanced Filtering: Enable users to search properties by price, location, and size.
+- Chat Support: Real-time communication between buyers and sellers.
+- AI Insights: Predict property prices and trends.
 
