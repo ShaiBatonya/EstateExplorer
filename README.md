@@ -106,7 +106,9 @@ Open your browser and navigate to:
 plaintext
 Copy code
 http://localhost:3000
+
 ---
+
 ### Usage
 For Buyers and Sellers
 Browse available properties.
@@ -114,7 +116,9 @@ Register and log in to manage favorites and transactions.
 For Admins
 Access the admin panel to manage property listings.
 View detailed analytics about user interactions and platform performance.
+
 ---
+
 ### Future Enhancements
 Here are some of the exciting features we plan to implement in the future:
 
