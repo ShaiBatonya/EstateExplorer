@@ -1,4 +1,4 @@
-# 🏠 Real Estate Platform
+# 🏠  EstateExplorer Platform
 
 A modern, comprehensive MERN-stack web application designed for buying, selling, and managing real estate properties efficiently. The platform combines a sleek, user-friendly interface with a powerful backend to deliver a seamless experience for property buyers, sellers, and administrators.
 
