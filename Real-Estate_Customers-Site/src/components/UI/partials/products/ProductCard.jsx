@@ -1,3 +1,4 @@
+import React, { useContext } from "react";
 import {
   Box,
   Image,
@@ -8,136 +9,133 @@ import {
   Badge,
   IconButton,
   Tooltip,
-  useColorModeValue,
   Divider,
 } from "@chakra-ui/react";
 import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
 import { CartContext } from "../../../../context/CartContext";
 import { AuthContext } from "../../../../context/AuthContext";
 import { toast } from "react-toastify";
+import "./ProductCard.css";
 
 const MotionBox = motion(Box);
 
-function ProductCard({ product }) {
+const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
   const { user } = useContext(AuthContext);
 
   return (
     <MotionBox
-      whileHover={{ scale: 1.05 }}
+      className="product-card"
+      whileHover={{ scale: 1.03 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      bgGradient="linear(to-br, gray.900, gray.800)"
-      borderRadius="xl"
-      overflow="hidden"
-      shadow="2xl"
-      p={5}
       position="relative"
+      p={5}
+      rounded="xl"
       w="full"
       maxW="400px"
       mx="auto"
-      _hover={{
-        boxShadow: "dark-lg",
-        transform: "translateY(-8px)",
-      }}
     >
-      {/* Favorite Button */}
+      {/* Favorite (Wishlist) Button */}
       <Tooltip label="Add to Favorites" fontSize="sm" placement="top">
         <IconButton
           aria-label="Add to favorites"
           icon={<AiOutlineHeart />}
           position="absolute"
-          top="10px"
-          right="10px"
+          top="15px"
+          right="15px"
           fontSize="22px"
-          color="gray.400"
           variant="ghost"
-          _hover={{ color: "red.500" }}
+          className="favorite-icon"
         />
       </Tooltip>
 
-      {/* Product Image */}
+      {/* Property Image */}
       <Image
         src={product.product_image}
         alt={product.product_name}
         objectFit="cover"
-        borderRadius="md"
-        h="250px"
-        w="100%"
         mb={3}
-        transition="opacity 0.4s ease"
-        _hover={{ opacity: 0.85 }}
+        w="100%"
+        h="240px"
+        borderRadius="lg"
+        className="property-image"
       />
 
       <Box>
-        {/* Product Badge */}
-        <Badge colorScheme="purple" borderRadius="full" px="3" py="1">
+        {/* Premium Badge or Category */}
+        <Badge
+          bg="rgba(255, 255, 255, 0.15)"
+          color="var(--luxury-color)"
+          rounded="full"
+          px={3}
+          py={1}
+          fontWeight="bold"
+          textTransform="uppercase"
+          letterSpacing="0.06em"
+          mb={2}
+        >
           Premium
         </Badge>
 
-        {/* Product Title */}
-        <Text
-          mt={3}
-          fontWeight="bold"
-          fontSize="xl"
-          color="white"
-          noOfLines={1}
-        >
+        {/* Title / Name */}
+        <Text fontWeight="bold" fontSize="xl" color="white" noOfLines={1}>
           {product.product_name}
         </Text>
 
-        {/* Product Price */}
-        <Text fontSize="lg" fontWeight="semibold" color="teal.300" mt={2}>
-          ${product.product_price}
+        {/* Price */}
+        <Text fontSize="lg" fontWeight="semibold" mt={1} color="var(--luxury-color)">
+          ${product.product_price.toLocaleString()}
         </Text>
 
         <Divider borderColor="gray.600" my={3} />
 
-        {/* Product Description */}
-        <Text fontSize="sm" color="gray.400" noOfLines={2}>
+        {/* Description */}
+        <Text fontSize="sm" color="gray.300" noOfLines={2} mb={3}>
           {product.product_description}
         </Text>
 
-        <HStack justify="space-between" align="center" mt={4}>
-          {/* Star Ratings */}
-          <HStack spacing={1}>
-            {Array(5)
-              .fill("")
-              .map((_, i) => (
-                <Box
-                  key={i}
-                  h="6px"
-                  w="6px"
-                  bg={i < product.rating ? "yellow.400" : "gray.500"}
-                  borderRadius="full"
-                />
-              ))}
-          </HStack>
+        {/* Star Rating (or circle rating) */}
+        <HStack spacing={1} mb={4}>
+          {Array(5)
+            .fill("")
+            .map((_, i) => (
+              <Box
+                key={i}
+                h="6px"
+                w="6px"
+                bg={i < product.rating ? "yellow.400" : "gray.600"}
+                borderRadius="full"
+              />
+            ))}
         </HStack>
 
-        {/* Buttons */}
-        <VStack mt={5} spacing={4}>
+        {/* Actions */}
+        <VStack spacing={3}>
           {user ? (
             <>
               <Button
-                size="lg"
-                colorScheme="teal"
+                size="md"
                 w="full"
+                bg="linear-gradient(135deg, #2c2c2c, #1a1a1a)"
+                color="white"
+                _hover={{
+                  bg: "linear-gradient(135deg, #3a3a3a, #2c2c2c)",
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.7)",
+                }}
                 onClick={() => navigate(`/product/${product._id}`)}
-                _hover={{ bg: "teal.600" }}
               >
                 View Details
               </Button>
               <Button
-                leftIcon={<AiOutlineShoppingCart />}
-                size="lg"
-                colorScheme="blue"
+                size="md"
                 w="full"
+                leftIcon={<AiOutlineShoppingCart />}
+                className="add-to-cart"
                 onClick={() => {
                   addToCart(product);
                   toast.success(`${product.product_name} added to cart!`);
@@ -149,22 +147,30 @@ function ProductCard({ product }) {
           ) : (
             <MotionBox
               p={4}
-              bg="gray.700"
-              borderRadius="md"
+              bg="rgba(255, 255, 255, 0.1)"
+              rounded="md"
               color="white"
               fontSize="md"
-              fontWeight="bold"
               textAlign="center"
               whileHover={{ scale: 1.02 }}
-              transition="0.3s"
             >
-              🚀 Please <Text as="span" color="teal.300" cursor="pointer" onClick={() => navigate("/login")}>Log In</Text> to view details or add to cart!
+              Please{" "}
+              <Text
+                as="span"
+                color="var(--luxury-color)"
+                cursor="pointer"
+                fontWeight="bold"
+                onClick={() => navigate("/login")}
+              >
+                log in
+              </Text>{" "}
+              to view details or add to cart!
             </MotionBox>
           )}
         </VStack>
       </Box>
     </MotionBox>
   );
-}
+};
 
 export default ProductCard;

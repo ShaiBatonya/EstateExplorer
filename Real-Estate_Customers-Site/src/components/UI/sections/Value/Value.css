@@ -1,220 +1,219 @@
-.v-wrapper {
-  background: radial-gradient(circle, #0f0f0f, #1a1a1a);
-  padding: 5rem 2rem;
-  color: white;
+@import url("https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&family=Playfair+Display:wght@700&display=swap");
+
+:root {
+  --luxury-color: #d4af37; /* Gold */
+  --text-color: #ffffff;
+  --background-color: #000000;
+  --overlay-color: rgba(0, 0, 0, 0.4);
+  --font-family: "Heebo", sans-serif;
+  --heading-font: "Playfair Display", serif;
+}
+
+/* Section with parallax background (similar to Hero) */
+.value-section {
   position: relative;
+  color: var(--text-color);
+  background: var(--background-color);
   overflow: hidden;
+  padding: 3rem 1rem;
 }
 
-.v-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 3rem;
-  max-width: 1200px;
-  margin: 0 auto;
+/* Parallax overlay */
+.value-parallax-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 180vh;
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.25),
+    rgba(0, 0, 0, 0.7) 70%
+  );
+  z-index: 1;
+}
+
+/* Container */
+.value-container {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  width: 95%;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  padding-top: 5rem;
+  position: relative;
+  z-index: 2;
+  min-height: 80vh;
 }
 
-.v-left .image-container {
-  width: 100%;
-  border-radius: 20px;
+/* Left: Image */
+.value-left .image-wrapper {
+  flex: 1;
+  border-radius: 1rem;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-  animation: fadeInUp 1.5s ease-out forwards;
-  opacity: 0;
-  transform: translateY(50px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+  max-width: 550px;
+  margin: 0 auto 2rem;
 }
-
-.v-left .image-container img {
+.value-left .image-wrapper img {
   width: 100%;
   height: auto;
   object-fit: cover;
-  transition: transform 0.3s ease, filter 0.3s ease;
   filter: brightness(0.85);
+  transition: transform 0.4s ease, filter 0.4s ease;
 }
-
-.v-left .image-container img:hover {
+.value-left .image-wrapper img:hover {
   transform: scale(1.03);
   filter: brightness(1);
 }
 
-.v-right {
+/* Right: Text & Accordion */
+.value-right {
+  flex: 1;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  animation: fadeInRight 1.5s ease-out forwards;
-  opacity: 0;
-  transform: translateX(50px);
+  gap: 1.5rem;
 }
 
-.orangeText {
-  color: #ff914d;
+/* Titles (matching Hero style) */
+.value-title {
+  font-family: var(--heading-font);
   font-weight: 700;
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.primaryText {
-  font-size: 3rem;
-  font-weight: 900;
-  background: linear-gradient(to right, #4e54c8, #8f94fb);
-  -webkit-background-clip: text;
-  color: transparent;
-  text-transform: capitalize;
+  font-size: 2.8rem;
+  line-height: 1.2;
   margin-bottom: 1rem;
+  color: var(--text-color);
 }
-
-.secondaryText {
-  font-size: 1.1rem;
-  color: #b0b0b0;
-  line-height: 1.8;
-  max-width: 550px;
+.value-title span {
+  color: var(--luxury-color);
 }
-
-.accordion {
-  margin-top: 2rem;
-  width: 100%;
-}
-
-.accordionItem {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 15px;
-  overflow: hidden;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  transition: all 0.4s ease-in-out;
-}
-
-.accordionItem.open {
-  box-shadow: 0 15px 40px rgba(255, 255, 255, 0.1);
-  transform: scale(1.02);
-}
-
-.accordionButton {
-  padding: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(135deg, #1e1e1e, #2b2b2b);
-  color: #e0e0e0;
-  font-weight: 600;
-  font-size: 1.2rem;
-  transition: background 0.3s ease, transform 0.2s ease;
-  border: none;
-  cursor: pointer;
-}
-
-.accordionButton:hover {
-  background: linear-gradient(135deg, #2b2b2b, #3a3a3a);
-  transform: scale(1.03);
-}
-
-.accordionButton .icon {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 1rem;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background 0.3s ease;
-}
-
-.accordionButton .icon:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.accordionItemPanel {
-  background: rgba(255, 255, 255, 0.04);
-  color: #d0d0d0;
-  padding: 2rem;
-  font-size: 1.1rem;
-  line-height: 1.8;
-  transition: all 0.4s ease-in-out;
-}
-
-.accordionItemPanel p {
+.value-subtitle {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 1.6rem;
   margin-bottom: 1rem;
+  color: var(--luxury-color);
 }
-
-.accordionItemPanel ul {
-  margin-top: 1rem;
-  padding-left: 1.5rem;
-  list-style: disc;
-}
-
-.accordionItemPanel ul li {
-  margin-bottom: 0.5rem;
+.value-description {
+  font-family: var(--font-family);
   font-size: 1rem;
-  color: #c4c4c4;
+  font-weight: bold;
+  line-height: 1.6;
+  color: #dcdcdc;
 }
 
-.testimonials-carousel {
-  margin-top: 3rem;
+/* Accordion */
+.value-accordion {
+  margin-top: 1rem;
 }
-
-.testimonial-card {
-  background: rgba(255, 255, 255, 0.08);
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-  text-align: center;
+.accordion-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
   transition: transform 0.3s ease;
 }
-
-.testimonial-card:hover {
-  transform: scale(1.05);
+.accordion-item:hover {
+  transform: translateY(-3px);
 }
-
-.testimonial-card img {
-  border-radius: 50%;
-  margin-bottom: 1rem;
-  border: 3px solid #8f94fb;
-}
-
-.testimonial-card p {
+.accordion-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  cursor: pointer;
   font-size: 1rem;
-  color: #d4d4d4;
-  margin-bottom: 0.5rem;
+  color: #e0e0e0;
+  background: none;
+  border: none;
+  text-align: left;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.accordion-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--luxury-color);
+}
+.accordion-button .icon {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.5rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  transition: background 0.3s ease;
+}
+.accordion-button .icon:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.accordionItemPanel {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  color: #cccccc;
+  font-size: 0.95rem;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(100px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Testimonials Carousel */
+.testimonials-carousel {
+  margin-top: 3rem;
+  width: 100%;
+  z-index: 2;
+}
+.testimonial-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
 }
 
-@keyframes fadeInRight {
-  from {
-    opacity: 0;
-    transform: translateX(100px);
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .value-container {
+    flex-direction: column;
+    padding-top: 6rem;
+    text-align: center;
   }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+  .value-left .image-wrapper {
+    margin-bottom: 1rem;
+  }
+  .value-right {
+    max-width: 100%;
   }
 }
-
 @media (max-width: 768px) {
-  .v-left .image-container {
-    margin: 0 auto;
+  .value-title {
+    font-size: 2.2rem;
   }
-
-  .primaryText {
-    font-size: 2.5rem;
+  .value-subtitle {
+    font-size: 1.3rem;
   }
-
-  .accordionButton {
-    font-size: 1rem;
-    padding: 1.2rem;
+  .value-description {
+    font-size: 0.95rem;
   }
-
-  .testimonials-carousel {
-    margin-top: 2rem;
+}
+@media (max-width: 480px) {
+  .value-title {
+    font-size: 1.9rem;
+  }
+  .value-subtitle {
+    font-size: 1.1rem;
+  }
+  .value-description {
+    font-size: 0.9rem;
+  }
+  .accordion-button {
+    font-size: 0.9rem;
+    padding: 0.8rem;
   }
 }

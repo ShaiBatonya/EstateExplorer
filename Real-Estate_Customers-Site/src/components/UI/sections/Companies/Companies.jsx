@@ -1,3 +1,4 @@
+
 import companiesImage from "../../../../assets/prologis.png";
 import towerImage from "../../../../assets/tower.png";
 import equinixImage from "../../../../assets/equinix.png";
@@ -7,8 +8,8 @@ import "./Companies.css";
 const Companies = () => {
   return (
     <section className="c-wrapper">
-      <div className="paddings innerWidth flexCenter c-container">
-     
+      <div className="c-container">
+        <h2 className="companies-title">Our Trusted Partners</h2>
         <div className="companies-images">
           <img src={equinixImage} alt="Equinix" />
           <img src={towerImage} alt="Tower" />

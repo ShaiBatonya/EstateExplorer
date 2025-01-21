@@ -1,72 +1,75 @@
-// src/components/UI/sections/Hero/Hero.jsx
-
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, useAnimation } from 'framer-motion';
-import CountUp from 'react-countup';
-import './Hero.css';
-import { Link } from 'react-router-dom';
-import heroImage from '../../../../assets/hero-image.png'; // Ensure this is a high-resolution image
-import valueImage from '../../../../assets/value.png';
-import pic3 from '../../../../assets/pic3.avif';
-import Slider from 'react-slick'; // Import react-slick for carousel
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import React, { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useAnimation,
+  useViewportScroll,
+  useTransform,
+} from "framer-motion";
+import CountUp from "react-countup";
+import { Link } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import heroImage from "../../../../assets/hero-image.png";
+import valueImage from "../../../../assets/value.png";
+import pic3 from "../../../../assets/pic3.avif";
+import "./Hero.css";
 
 const Hero = () => {
-  // Animation controls
   const controls = useAnimation();
   const ref = useRef(null);
+
+  // Parallax scroll
+  const { scrollY } = useViewportScroll();
+  const parallaxY = useTransform(scrollY, [0, 300], [0, 80]);
+
+  // Hero images
   const [currentImage, setCurrentImage] = useState(heroImage);
   const images = [heroImage, valueImage, pic3];
 
+  // Observe when the hero section is in view
   useEffect(() => {
     if (!ref.current) return;
 
-    // Intersection Observer to trigger animations when the component is in view
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          controls.start('visible');
+          controls.start("visible");
         } else {
-          controls.start('hidden');
+          controls.start("hidden");
         }
       },
-      {
-        root: null,
-        threshold: 0.1,
-      }
+      { root: null, threshold: 0.15 }
     );
 
     observer.observe(ref.current);
-
     return () => {
       observer.disconnect();
     };
   }, [controls]);
 
+  // Rotate images every 6s
   useEffect(() => {
-    // Timer to switch images every 6 seconds with fade-out and fade-in effect
-    const imageSwitchInterval = setInterval(() => {
-      controls.start('fadeOut').then(() => {
-        setCurrentImage((prevImage) => {
-          const currentIndex = images.indexOf(prevImage);
-          const nextIndex = (currentIndex + 1) % images.length;
-          return images[nextIndex];
+    const interval = setInterval(() => {
+      controls.start("fadeOut").then(() => {
+        setCurrentImage((prev) => {
+          const currentIndex = images.indexOf(prev);
+          return images[(currentIndex + 1) % images.length];
         });
-        controls.start('fadeIn');
+        controls.start("fadeIn");
       });
     }, 6000);
 
-    return () => clearInterval(imageSwitchInterval);
+    return () => clearInterval(interval);
   }, [controls, images]);
 
-  // Animation variants
-  const fadeInOutImage = {
-    fadeOut: { opacity: 0, transition: { duration: 2, ease: 'easeInOut' } },
-    fadeIn: { opacity: 1, transition: { duration: 2, delay: 0.5, ease: 'easeInOut' } },
+  // Framer Motion variants
+  const fadeInOutVariants = {
+    fadeOut: { opacity: 0, transition: { duration: 1.5, ease: "easeInOut" } },
+    fadeIn: { opacity: 1, transition: { duration: 1.5, delay: 0.5, ease: "easeInOut" } },
   };
 
-  const staggerContainer = {
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -78,12 +81,16 @@ const Hero = () => {
     },
   };
 
-  const fadeInUp = {
+  const fadeInUpVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 1, ease: 'easeOut' } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 1, ease: "easeOut" },
+    },
   };
 
-  // Slider settings
+  // Slick carousel settings
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -95,82 +102,84 @@ const Hero = () => {
     arrows: false,
     pauseOnHover: true,
     fade: true,
-    adaptiveHeight: false, // Changed to false to prevent container height adjustment
+    adaptiveHeight: false,
     responsive: [
       {
         breakpoint: 1024,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: true,
-        },
+        settings: { slidesToShow: 1, slidesToScroll: 1, dots: true },
       },
       {
         breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          dots: true,
-        },
+        settings: { slidesToShow: 1, slidesToScroll: 1, dots: true },
       },
       {
         breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          dots: true,
-        },
+        settings: { slidesToShow: 1, slidesToScroll: 1, dots: true },
       },
     ],
   };
 
   return (
     <section className="hero-section" ref={ref}>
+      {/* Parallax decorative background */}
+      <motion.div className="hero-parallax-bg" style={{ y: parallaxY }} />
+
       <motion.div
         initial="hidden"
         animate={controls}
-        variants={staggerContainer}
+        variants={containerVariants}
         className="hero-container"
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', overflow: 'hidden', height: '100vh' }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          position: "relative",
+          overflow: "hidden",
+          minHeight: "100vh",
+        }}
       >
-        {/* Text Content - Left Side */}
-        <motion.div className="hero-content" variants={fadeInUp} style={{ flex: '1', zIndex: 2, padding: '2rem', maxWidth: '600px' }}>
-          {/* Title */}
+        {/* Text Block */}
+        <motion.div
+          className="hero-content"
+          variants={fadeInUpVariants}
+          style={{
+            flex: "1",
+            zIndex: 2,
+            padding: "2rem",
+            maxWidth: "600px",
+          }}
+        >
           <h1 className="hero-title">
-            Discover the <span>Peak of Luxury</span>
+            Explore the <span>Height of Elegance</span>
           </h1>
-
-          {/* Subtitle */}
-          <h2 className="hero-subtitle">
-            Find Your Perfect Dream Home
-          </h2>
-
-          {/* Description */}
+          <h2 className="hero-subtitle">Luxury Living Redefined</h2>
           <p className="hero-description">
-            Step into a world of luxury properties, curated to provide unparalleled elegance and comfort. Your dream home awaits.
+            Indulge in a curated collection of high-end properties designed for
+            comfort, sophistication, and an elevated lifestyle.
           </p>
 
-          {/* Call to Action Buttons */}
           <div className="cta-buttons">
             <Link to="/properties" className="button primary-button">
-              Explore Properties
+              View Properties
             </Link>
             <Link to="/contact" className="button secondary-button">
-              Get in Touch
+              Contact Us
             </Link>
           </div>
 
-          {/* Statistics Carousel */}
-          <motion.div className="stats-carousel" variants={fadeInUp} style={{ marginTop: '2rem' }}>
+          <motion.div
+            className="stats-carousel"
+            variants={fadeInUpVariants}
+            style={{ marginTop: "2rem" }}
+          >
             <Slider {...sliderSettings}>
               {[
-                { end: 20000, label: 'Luxury Properties', description: 'Exclusive homes to choose from' },
-                { end: 10000, label: 'Satisfied Clients', description: 'Join our happy clients' },
-                { end: 150, label: 'International Awards', description: 'Recognized globally' },
+                { end: 25000, label: "Exclusive Estates", description: "From city penthouses to island retreats" },
+                { end: 12000, label: "Satisfied Clients", description: "Join our global family" },
+                { end: 200, label: "Prestigious Awards", description: "Excellence recognized worldwide" },
               ].map((stat, i) => (
                 <div key={i} className="stat-slide">
-                  <motion.div whileHover={{ scale: 1.1 }}>
+                  <motion.div whileHover={{ scale: 1.07 }}>
                     <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.6 }}>
                       <CountUp start={0} end={stat.end} duration={2.8} delay={0.3} />
                       <span className="plus-sign">+</span>
@@ -184,30 +193,35 @@ const Hero = () => {
           </motion.div>
         </motion.div>
 
-        {/* Image - Right Side */}
+        {/* Hero Image */}
         <motion.div
           className="hero-image-container"
-          variants={fadeInOutImage}
+          variants={fadeInOutVariants}
           animate={controls}
-          style={{ flex: '1', height: '100%', position: 'relative', maxWidth: '60%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{
+            flex: "1",
+            maxWidth: "50%",
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
           <img
             src={currentImage}
-            alt="Luxury Property"
+            alt="Hero property"
             className="hero-image"
             loading="lazy"
+            decoding="async"
             style={{
-              width: '100%',
-              height: '100%',
-              maxWidth: '600px',
-              maxHeight: '600px',
-              objectFit: 'cover',
-              borderRadius: '20px',
-              position: 'relative',
+              width: "100%",
+              height: "auto",
+              maxHeight: "80vh",
+              objectFit: "cover",
+              borderRadius: "1rem",
             }}
           />
-          {/* Decorative Overlay */}
-          <div className="image-overlay"></div>
+          <div className="image-overlay" />
         </motion.div>
       </motion.div>
     </section>

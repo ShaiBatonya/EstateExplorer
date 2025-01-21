@@ -1,5 +1,5 @@
-import { motion, useAnimation } from "framer-motion";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
+import { motion, useAnimation, useViewportScroll, useTransform } from "framer-motion";
 import {
   Accordion,
   AccordionItem,
@@ -7,15 +7,37 @@ import {
   AccordionItemButton,
   AccordionItemPanel,
 } from "react-accessible-accordion";
-import { Box, Avatar, Text } from "@chakra-ui/react";
+import { Box, Text, Avatar } from "@chakra-ui/react";
 import { HiShieldCheck } from "react-icons/hi";
 import { MdCancel, MdAnalytics, MdOutlineArrowDropDown } from "react-icons/md";
-import valueImage from "../../../../assets/value.png";
-import "./Value.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination, Autoplay } from "swiper/modules";
+import valueImage from "../../../../assets/value.png";
+import "./Value.css";
+
+// Example data
+const accordionData = [
+  {
+    icon: <HiShieldCheck />,
+    heading: "Best Interest Rates",
+    detail:
+      "We combine market expertise with strong lender partnerships to secure unbeatable rates for your dream property.",
+  },
+  {
+    icon: <MdCancel />,
+    heading: "Prevent Unstable Prices",
+    detail:
+      "Benefit from transparent, reliable deals that protect you from sudden market fluctuations and hidden fees.",
+  },
+  {
+    icon: <MdAnalytics />,
+    heading: "Top-Tier Pricing",
+    detail:
+      "Leverage our global network to unlock exclusive listings and ensure you get the best price on the market.",
+  },
+];
 
 const testimonials = [
   {
@@ -25,7 +47,7 @@ const testimonials = [
     avatar: "https://i.pravatar.cc/300?img=1",
   },
   {
-    text: "Found the perfect property easily!",
+    text: "Found the perfect property effortlessly!",
     name: "Michael Brown",
     role: "Market Analyst",
     avatar: "https://i.pravatar.cc/300?img=2",
@@ -42,76 +64,80 @@ const Value = () => {
   const controls = useAnimation();
   const ref = useRef(null);
 
+  // Parallax effect (similar to Hero)
+  const { scrollY } = useViewportScroll();
+  const parallaxY = useTransform(scrollY, [0, 300], [0, 80]);
+
+  // Reveal animations on scroll
   useEffect(() => {
+    if (!ref.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          controls.start("visible");
-        } else {
-          controls.start("hidden");
-        }
+        if (entry.isIntersecting) controls.start("visible");
+        else controls.start("hidden");
       },
-      { threshold: 0.3 }
+      { threshold: 0.15 }
     );
-
-    if (ref.current) observer.observe(ref.current);
+    observer.observe(ref.current);
     return () => observer.disconnect();
   }, [controls]);
 
-  const fadeIn = {
-    hidden: { opacity: 0, y: 50 },
+  // Framer Motion variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.15 },
+    },
+  };
+  const fadeInUpVariants = {
+    hidden: { opacity: 0, y: 25 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 1 },
+      transition: { duration: 0.6, ease: "easeOut" },
     },
   };
 
   return (
-    <section id="value" className="v-wrapper" ref={ref}>
+    <section className="value-section" ref={ref}>
+      {/* Parallax background overlay (matching Hero) */}
+      <motion.div className="value-parallax-bg" style={{ y: parallaxY }} />
+
       <motion.div
+        className="value-container"
         initial="hidden"
         animate={controls}
-        variants={fadeIn}
-        className="v-container"
+        variants={containerVariants}
       >
-        <div className="v-left">
-          <motion.div
-            initial="hidden"
-            animate={controls}
-            className="image-container"
-          >
-            <img src={valueImage} alt="Value Section" />
-          </motion.div>
-        </div>
+        {/* Left: Image */}
+        <motion.div className="value-left" variants={fadeInUpVariants}>
+          <div className="image-wrapper">
+            <img
+              src={valueImage}
+              alt="Value"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </motion.div>
 
-        <div className="v-right">
-          <span className="orangeText">Our Value</span>
-          <motion.span className="primaryText">Value We Give to You</motion.span>
-          <motion.span className="secondaryText">
-            We provide top-notch services ensuring your dream home is a reality.
-          </motion.span>
-          <Accordion allowZeroExpanded className="accordion">
-            {[
-              {
-                icon: <HiShieldCheck />,
-                heading: "Best interest rates on the market",
-                detail: "Get the best rates for your dream home with us.",
-              },
-              {
-                icon: <MdCancel />,
-                heading: "Prevent unstable prices",
-                detail: "We ensure stability and transparency in all deals.",
-              },
-              {
-                icon: <MdAnalytics />,
-                heading: "Best price on the market",
-                detail: "Unlock exclusive property deals and unmatched prices.",
-              },
-            ].map((item, i) => (
-              <AccordionItem key={i} className="accordionItem">
+        {/* Right: Text + Accordion */}
+        <motion.div className="value-right" variants={fadeInUpVariants}>
+          <h2 className="value-title">
+            Our <span>Value</span>
+          </h2>
+          <h3 className="value-subtitle">Excellence You Deserve</h3>
+          <p className="value-description">
+            Experience unparalleled expertise, competitive rates, and tailored
+            solutions that make your real estate journey truly exceptional.
+          </p>
+
+          <Accordion allowZeroExpanded className="value-accordion">
+            {accordionData.map((item, idx) => (
+              <AccordionItem key={idx} className="accordion-item">
                 <AccordionItemHeading>
-                  <AccordionItemButton className="accordionButton">
+                  <AccordionItemButton className="accordion-button">
                     <div className="icon">{item.icon}</div>
                     <span>{item.heading}</span>
                     <MdOutlineArrowDropDown />
@@ -123,25 +149,32 @@ const Value = () => {
               </AccordionItem>
             ))}
           </Accordion>
-        </div>
+        </motion.div>
       </motion.div>
 
       <Swiper
         modules={[Pagination, Autoplay]}
-        autoplay={{ delay: 2500 }}
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
         pagination={{ clickable: true }}
-        spaceBetween={30}
+        spaceBetween={20}
         slidesPerView={1}
         className="testimonials-carousel"
       >
-        {testimonials.map((testimonial, index) => (
-          <SwiperSlide key={index}>
-            <Box className="testimonial-card" mx="auto">
-              <Avatar src={testimonial.avatar} size="xl" mb={4} mx="auto" />
-              <Text fontSize="lg" mb={2}>
+        {testimonials.map((testimonial, i) => (
+          <SwiperSlide key={i}>
+            <Box className="testimonial-card">
+              <Avatar
+                src={testimonial.avatar}
+                size="xl"
+                mb={4}
+                border="2px solid var(--luxury-color)"
+              />
+              <Text fontSize="lg" fontStyle="italic" mb={2} color="#ffffff">
                 "{testimonial.text}"
               </Text>
-              <Text fontWeight="bold">{testimonial.name}</Text>
+              <Text fontWeight="bold" color="var(--luxury-color)">
+                {testimonial.name}
+              </Text>
               <Text fontSize="sm" color="gray.400">
                 {testimonial.role}
               </Text>
