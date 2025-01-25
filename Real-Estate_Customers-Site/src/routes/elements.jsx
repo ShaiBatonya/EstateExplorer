@@ -15,7 +15,7 @@ export const Login = Loadable(lazy(() => import("../pages/public/Login")));
 export const NotFound = Loadable(lazy(() => import("../pages/public/NotFound")));
 export const Orders = Loadable(lazy(() => import("../pages/private/Orders")));
 export const PasswordReset = Loadable(lazy(() => import("../pages/public/PasswordReset")));
-export const Product = Loadable(lazy(() => import("../pages/public/products/Product")));
+export const Product = Loadable(lazy(() => import("../pages/public/products/ProductDetails")));
 export const Profile = Loadable(lazy(() => import("../pages/private/Profile")));
 export const Register = Loadable(lazy(() => import("../pages/public/Register")));
 export const Cart = Loadable(lazy(() => import("../pages/public/Cart")));

@@ -16,7 +16,7 @@ import {
 } from "./elements";
 
 import Root from "../pages/Root";
-import Product from "../pages/public/products/Product";
+import Product from "../pages/public/products/ProductDetails";
 
 // HydrateFallback Component for Suspense
 const HydrateFallback = () => <div>Loading content...</div>;
