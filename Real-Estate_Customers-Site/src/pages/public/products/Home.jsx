@@ -38,7 +38,7 @@ const Hero = lazy(() => import("../../../components/UI/sections/Hero/Hero"));
 const Companies = lazy(() => import("../../../components/UI/sections/Companies/Companies"));
 const Value = lazy(() => import("../../../components/UI/sections/Value/Value"));
 const ProductCard = lazy(() => import("../../../components/UI/partials/products/ProductCard"));
-const Pagination = lazy(() => import("./Pagination"));
+const Pagination = lazy(() => import("../../../components/UI/partials/products/Pagination"));
 
 const MotionBox = motion(Box);
 const MotionButton = motion(Button);
